@@ -1,0 +1,15 @@
+{
+  "name": "lakeeffect.reader",
+  "version": "1.0.0",
+  "description": "Reader program for Lake Effect scouting data",
+  "main": "main.js",
+  "scripts": {
+    "test": "test",
+    "start": "electron ."
+  },
+  "author": "Ajay Ramachandran",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^4.1.0"
+  }
+}
