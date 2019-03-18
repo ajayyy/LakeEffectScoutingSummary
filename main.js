@@ -20,17 +20,20 @@ function createWindow () {
   window.on('closed', () => {
     window = null;
   });
-
   
+  loadData();
 }
 
 function loadData() {
   fs.readdir('./data', function(err, items) {
     if (err) throw err;
 
+    //list that holds all the data for the robots
+    var robots = [];
+
     //iterate through all files
-    for (var i = 0; i < items.length; i++) {
-      fs.readFile('./data/' + items[i], function(error, data) {
+    for (let i = 0; i < items.length; i++) {
+      fs.readFile('./data/' + items[i], "utf8", function(error, data) {
         if (error) throw error;
         if (data === "") {
           //file is empty
@@ -42,9 +45,28 @@ function loadData() {
           labels = data.split("\n")[0].split(",");
         }
 
+        let robot = new Robot();
+        robot.robotNumber = items[i].replace(".csv", "");
 
+        let lines = data.split("\n");
+        
+        let robotData = [];
+
+        for (let s = 0; s < lines.length; s++) {
+          robotData.push(lines[s].split(","));
+        }
+
+        robot.data = robotData;
+
+        //add to the full list of robots
+        robots.push(robot);
       });
     }
+
+    console.log('sending robots')
+
+    //send this variable over to the client side
+    global.robots = robots;
   });
 
 }
@@ -64,8 +86,8 @@ app.on('activate', () => {
 
 //Classes
 class Robot {
-  constructor() {
-      this.robotNumber = 0;
-      this.data = [];
+  constructor(robotNumber, data) {
+      this.robotNumber = robotNumber;
+      this.data = data;
   }
 }
