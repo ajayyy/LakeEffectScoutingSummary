@@ -5,10 +5,6 @@ const fs = require("fs");
 // be closed automatically when the JavaScript object is garbage collected.
 let window;
 
-//variables for data parsing
-//the labels at the top of each file, only pulled once
-var labels = null;
-
 function createWindow () {
   // Create the browser window.
   window = new BrowserWindow({ width: 800, height: 600 });
@@ -30,6 +26,8 @@ function loadData() {
 
     //list that holds all the data for the robots
     var robots = [];
+    //the labels at the top of each file, only pulled once
+    var labels = null;
 
     //iterate through all files
     for (let i = 0; i < items.length; i++) {
@@ -43,6 +41,7 @@ function loadData() {
         //parse through the data
         if (labels === null) {
           labels = data.split("\n")[0].split(",");
+          global.labels = labels;
         }
 
         let robot = new Robot();
@@ -62,8 +61,6 @@ function loadData() {
         robots.push(robot);
       });
     }
-
-    console.log('sending robots')
 
     //send this variable over to the client side
     global.robots = robots;
