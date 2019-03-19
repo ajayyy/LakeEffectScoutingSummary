@@ -1,3 +1,7 @@
 * {
     font-family: sans-serif;
 }
+
+.dataBox {
+    border: 2px solid black;
+}
