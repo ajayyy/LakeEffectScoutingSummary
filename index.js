@@ -36,7 +36,12 @@ function showData() {
                             amountOfTimesText = "once";
                         }
 
-                        autoSummary += labels[autoColumns[autoColumn]] + " " + amountOfTimesText + " in match " + robots[i].data[s][0] + "<br/>";
+                        //the action that just happened
+                        let actionHappened = labels[autoColumns[autoColumn]];
+                        //remove the word auto, it is unnessesary
+                        actionHappened = actionHappened.replace('Auto ', '');
+
+                        autoSummary += actionHappened + " " + amountOfTimesText + " in match " + robots[i].data[s][0] + "<br/>";
                         addedSomething = true;
                     }
                 }
