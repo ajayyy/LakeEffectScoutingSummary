@@ -28,7 +28,15 @@ function showData() {
 
                 for (let autoColumn = 0; autoColumn < autoColumns.length; autoColumn++) {
                     if (robots[i].data[s][autoColumns[autoColumn]] > 0) {
-                        autoSummary += labels[autoColumns[autoColumn]] + " in match " + robots[i].data[s][0] + "<br/>";
+                        let amountOfTimes = robots[i].data[s][autoColumns[autoColumn]];
+                        let amountOfTimesText = "";
+                        if (amountOfTimes > 1) {
+                            amountOfTimesText = amountOfTimes + " times";
+                        } else {
+                            amountOfTimesText = "once";
+                        }
+
+                        autoSummary += labels[autoColumns[autoColumn]] + " " + amountOfTimesText + " in match " + robots[i].data[s][0] + "<br/>";
                         addedSomething = true;
                     }
                 }
