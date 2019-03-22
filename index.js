@@ -16,19 +16,19 @@ function showData() {
 function showOverall(currentRobotNumber, labels, robots) {
     let fullSummary = "";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Cargo Hit");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Cargo");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Cargo Hit");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Cargo");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Hatch Hit");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Hatch");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Hatch Hit");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Hatch");
 
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
@@ -38,10 +38,13 @@ function showOverall(currentRobotNumber, labels, robots) {
 function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
     let fullSummary = "";
 
-    let fullRocketCargoIndex = getColumnIndex(labels, searchTerm.toLowerCase());
+    //miss and hit to include the successes and failures
+    let hitIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " hit");
+    let missIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " miss");
 
     //all the data points for this robot
-    let fullRocketCargoItems = [];
+    let hitItems = [];
+    let missItems = [];
     for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
         if (robots[currentRobot].robotNumber === currentRobotNumber) {
             //all the matches for this robot
@@ -49,20 +52,23 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
             for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
-                    fullRocketCargoItems.push(robots[currentRobot].data[matchNum][fullRocketCargoIndex]);
+                    hitItems.push(robots[currentRobot].data[matchNum][hitIndex]);
+                    missItems.push(robots[currentRobot].data[matchNum][missIndex]);
                 }
             }
         }
     }
     //find average
-    let fullRocketCargoAverage = getAverageItem(fullRocketCargoItems);
+    let hitAverage = getAverageItem(hitItems);
+    let missAverage = getAverageItem(missItems);
 
-    fullSummary += searchTerm + " Average " + fullRocketCargoAverage.toFixed(2) + "<br/>";
+    fullSummary += searchTerm + " Average " + hitAverage.toFixed(2) + " : " + missAverage.toFixed(2) + "<br/>";
 
     //find max
-    let fullRocketCargoMax = getMaxItems(fullRocketCargoItems);
+    let hitMaxItems = getMaxItems(hitItems);
+    let missMaxItems = getMaxItems(missItems);
 
-    fullSummary += searchTerm + " Max " + fullRocketCargoMax[0] + "<br/>";
+    fullSummary += searchTerm + " Max " + hitMaxItems[0] + " : " + missMaxItems[0] + "<br/>";
 
     //return resulted summary
     return fullSummary;
