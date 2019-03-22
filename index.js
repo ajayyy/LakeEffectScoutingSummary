@@ -14,7 +14,31 @@ function showData() {
 }
 
 function showOverall(currentRobotNumber, labels, robots) {
-    let fullRocketCargoIndex = getColumnIndex(labels, "teleop full rocket cargo hit");
+    let fullSummary = "";
+
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Cargo Hit");
+
+    fullSummary += "<br/>";
+
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Cargo Hit");
+
+    fullSummary += "<br/>";
+
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Hatch Hit");
+
+    fullSummary += "<br/>";
+
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Hatch Hit");
+
+    document.getElementById('overallSummary').innerHTML = fullSummary;
+}
+
+//returns a summary message for this action
+//used to batch find the different action's stats
+function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
+    let fullSummary = "";
+
+    let fullRocketCargoIndex = getColumnIndex(labels, searchTerm.toLowerCase());
 
     //all the data points for this robot
     let fullRocketCargoItems = [];
@@ -33,13 +57,15 @@ function showOverall(currentRobotNumber, labels, robots) {
     //find average
     let fullRocketCargoAverage = getAverageItem(fullRocketCargoItems);
 
-    document.getElementById('overallSummary').innerHTML = "Full Rocket Cargo Average " + fullRocketCargoAverage.toFixed(2);
+    fullSummary += searchTerm + " Average " + fullRocketCargoAverage.toFixed(2) + "<br/>";
 
     //find max
     let fullRocketCargoMax = getMaxItems(fullRocketCargoItems);
 
-    document.getElementById('overallSummary').innerHTML += "Full Rocket Cargo Max " + fullRocketCargoMax[0];
+    fullSummary += searchTerm + " Max " + fullRocketCargoMax[0] + "<br/>";
 
+    //return resulted summary
+    return fullSummary;
 }
 
 function showAuto(currentRobotNumber, labels, robots) {
