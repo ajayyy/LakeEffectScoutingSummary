@@ -20,7 +20,7 @@ function showOverall(currentRobotNumber, labels, robots) {
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Cargo");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Cargo");
 
     fullSummary += "<br/>";
 
@@ -28,7 +28,7 @@ function showOverall(currentRobotNumber, labels, robots) {
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Cargo Ship Hatch");
+    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Hatch");
 
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
@@ -66,6 +66,9 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
 
     //find max
     let hitMaxItems = getMaxItems(hitItems);
+
+    //find minimum misses in the matches of the maximum (their best performance)
+
     let missMaxItems = getMaxItems(missItems);
 
     fullSummary += searchTerm + " Max " + hitMaxItems[0] + " : " + missMaxItems[0] + "<br/>";
@@ -125,6 +128,16 @@ function showAuto(currentRobotNumber, labels, robots) {
     document.getElementById('autoSummary').innerHTML = autoSummary;
 }
 
+function toggleBox(id) {
+    if (document.getElementById(id).style.display === "none") {
+        //enable it
+        document.getElementById(id).style.display = "block";
+    } else {
+        //disable it
+        document.getElementById(id).style.display = "none";
+    }
+}
+
 function getColumnIndex(labels, search) {
     for (let i = 0; i < labels.length; i++) {
         if (labels[i].toLowerCase().includes(search)) {
@@ -151,6 +164,24 @@ function getMaxItems(items) {
     }
 
     return allMaxItems;
+}
+
+function getMinItems(items) {
+    //there might be multiple items that are the maximum
+    let allMinItems = [-1];
+    for (let i = 0; i < items.length; i++) {
+        if (items[i] < allMinItems[0] || allMinItems[0] == -1) {
+            if (items[i] == allMinItems[0]) {
+                //already exists, multiple maximum items
+                allMinItems.push(items[i]);
+            } else {
+                //set this as the maximum
+                allMinItems = [items[i]];
+            }
+        }
+    }
+
+    return allMinItems;
 }
 
 function getAverageItem(items) {

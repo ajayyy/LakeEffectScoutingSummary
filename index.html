@@ -11,17 +11,21 @@
     <!–– Button to view data about the current robot !––>
     <button onclick="showData()">View Data</button>
 
-    <h3>Overall</h3>
+    <div id="overallLabel" onclick="toggleBox('overallSummaryContainer')">
+        <h3>Overall (click to hide/show)</h3>
+    </div>
 
-    <div class="dataBox">
+    <div id="overallSummaryContainer" class="dataBox">
         <p id="overallSummary">
 
         </p>
     </div>
 
-    <h3>Sandstorm Period</h3>
+    <div id="autoLabel" onclick="toggleBox('autoSummaryContainer')">
+        <h3>Sandstorm Period (click to hide/show)</h3>
+    </div>
 
-    <div class="dataBox">
+    <div id="autoSummaryContainer" class="dataBox">
         <p id="autoSummary">
 
         </p>
