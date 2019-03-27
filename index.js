@@ -70,8 +70,7 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
     //find max
     let hitMaxItems = getMaxItems(hitItems);
 
-    //find minimum misses in the matches of the maximum (their best performance)
-
+    //TODO: find minimum misses in the matches of the maximum (their best performance)
     let missMaxItems = getMaxItems(missItems);
 
     fullSummary += searchTerm + " Max " + hitMaxItems[0] + " : " + missMaxItems[0] + "<br/>";
