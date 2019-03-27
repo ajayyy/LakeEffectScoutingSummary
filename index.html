@@ -5,7 +5,7 @@
 </head>
 
 <body>
-
+   
     <input type="number" id="robotNumber"/>
 
     <!–– Button to view data about the current robot !––>
@@ -16,9 +16,18 @@
     </div>
 
     <div id="overallSummaryContainer" class="dataBox">
-        <p id="overallSummary">
+        <table>
+            <tr>
+                <td>
+                    <p id="overallSummary">
 
-        </p>
+                    </p>
+                </td>
+                <td>
+                    <img id="robot" width="350" styke="position: right;"/>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div id="autoLabel" onclick="toggleBox('autoSummaryContainer')">

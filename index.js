@@ -1,8 +1,7 @@
 var electron = require('electron');
 
 function showData() {
-    //show a quick summary of all the data for this robot\
-
+    //show a quick summary of all the data for this robot
     var currentRobotNumber = document.getElementById('robotNumber').value;
 
     var labels = electron.remote.getGlobal('labels');
@@ -11,6 +10,9 @@ function showData() {
     showOverall(currentRobotNumber, labels, robots);
 
     showAuto(currentRobotNumber, labels, robots);
+
+    //show robot photo
+    document.getElementById('robot').src = "photos/" + currentRobotNumber + ".JPG";
 }
 
 function showOverall(currentRobotNumber, labels, robots) {
@@ -50,6 +52,7 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
             //all the matches for this robot
             //starts at 1 to skip the labels
             for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                console.log("started loop " + matchNum)
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
                     hitItems.push(robots[currentRobot].data[matchNum][hitIndex]);
