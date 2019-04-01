@@ -35,6 +35,10 @@ function showOverall(currentRobotNumber, labels, robots) {
     fullSummary += "<br/>";
 
     fullSummary += "Death Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "died") + "%";
+    fullSummary += "<br/>";
+    fullSummary += "Defense Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "defense") + "%";
+    fullSummary += "<br/>";
+    fullSummary += "Tipped Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "tipped") + "%";
 
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
