@@ -32,6 +32,35 @@ function showOverall(currentRobotNumber, labels, robots) {
 
     fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Hatch");
 
+    //find average death rate
+    let diedColumn = getColumnIndex(labels, "died");
+    let diedItems = [];
+    for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
+        if (robots[currentRobot].robotNumber === currentRobotNumber) {
+            //all the matches for this robot
+            //starts at 1 to skip the labels
+            for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                //otherwise it's just a line break at the end of the file
+                if (robots[currentRobot].data[matchNum].length > 1) {
+                    if (robots[currentRobot].data[matchNum][diedColumn] === "true") {
+                        diedItems.push(1);
+                    } else if (robots[currentRobot].data[matchNum][diedColumn] === "false") {
+                        diedItems.push(0);
+                    } else {
+                        diedItems.push(robots[currentRobot].data[matchNum][diedColumn]);
+                    }
+                }
+            }
+        }
+    }
+    let diedAverage = getAverageItem(diedItems);
+    console.log(diedItems);
+    console.log(diedAverage);
+
+    fullSummary += "<br/>";
+
+    fullSummary += "Death Rate: " + (diedAverage * 100).toFixed(2) + "%";
+
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
 
@@ -52,7 +81,6 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
             //all the matches for this robot
             //starts at 1 to skip the labels
             for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
-                console.log("started loop " + matchNum)
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
                     hitItems.push(robots[currentRobot].data[matchNum][hitIndex]);
