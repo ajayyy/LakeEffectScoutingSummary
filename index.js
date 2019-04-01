@@ -32,9 +32,18 @@ function showOverall(currentRobotNumber, labels, robots) {
 
     fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Hatch");
 
-    //find average death rate
-    let diedColumn = getColumnIndex(labels, "died");
-    let diedItems = [];
+    fullSummary += "<br/>";
+
+    fullSummary += "Death Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "died") + "%";
+
+    document.getElementById('overallSummary').innerHTML = fullSummary;
+}
+
+//find average data point of this column
+function getColumnAverage(currentRobotNumber, labels, robots, searchTerm) {
+    //find average of this column
+    let column = getColumnIndex(labels, searchTerm);
+    let items = [];
     for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
         if (robots[currentRobot].robotNumber === currentRobotNumber) {
             //all the matches for this robot
@@ -42,26 +51,20 @@ function showOverall(currentRobotNumber, labels, robots) {
             for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
-                    if (robots[currentRobot].data[matchNum][diedColumn] === "true") {
-                        diedItems.push(1);
-                    } else if (robots[currentRobot].data[matchNum][diedColumn] === "false") {
-                        diedItems.push(0);
+                    if (robots[currentRobot].data[matchNum][column] === "true") {
+                        items.push(1);
+                    } else if (robots[currentRobot].data[matchNum][column] === "false") {
+                        items.push(0);
                     } else {
-                        diedItems.push(robots[currentRobot].data[matchNum][diedColumn]);
+                        items.push(robots[currentRobot].data[matchNum][column]);
                     }
                 }
             }
         }
     }
-    let diedAverage = getAverageItem(diedItems);
-    console.log(diedItems);
-    console.log(diedAverage);
+    let average = getAverageItem(items);
 
-    fullSummary += "<br/>";
-
-    fullSummary += "Death Rate: " + (diedAverage * 100).toFixed(2) + "%";
-
-    document.getElementById('overallSummary').innerHTML = fullSummary;
+    return (average * 100).toFixed(2);
 }
 
 //returns a summary message for this action
