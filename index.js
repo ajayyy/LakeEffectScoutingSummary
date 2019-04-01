@@ -39,8 +39,52 @@ function showOverall(currentRobotNumber, labels, robots) {
     fullSummary += "Defense Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "defense") + "%";
     fullSummary += "<br/>";
     fullSummary += "Tipped Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "tipped") + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    fullSummary += "Level 2 Successful Climb Rate: " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed") + "%";
+    fullSummary += "<br/>";
+    fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb") + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+    
+    fullSummary += "Level 3 Successful Climb Rate: " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed") + "%";
+    fullSummary += "<br/>";
+    fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb") + "%";
 
     document.getElementById('overallSummary').innerHTML = fullSummary;
+}
+
+//find the amount of times a certain string has been saved in a column in a percentage
+//Ex. Percentage of a successful level 2 climb
+//only if the first search term AND the second are true (in the current column and the next column)
+//Ex. First column: "level 2", second column: "success"
+function getColumnTextPercentage(currentRobotNumber, labels, robots, collumnTerm, rowSearch, nextColumnSearch) {
+    //find average of this column
+    let column = getColumnIndex(labels, collumnTerm);
+    let items = [];
+    for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
+        if (robots[currentRobot].robotNumber === currentRobotNumber) {
+            //all the matches for this robot
+            //starts at 1 to skip the labels
+            for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                //otherwise it's just a line break at the end of the file
+                if (robots[currentRobot].data[matchNum].length > 1) {
+                    if (robots[currentRobot].data[matchNum][column].toLowerCase() === rowSearch &&
+                            robots[currentRobot].data[matchNum][column + 1].toLowerCase() === nextColumnSearch) {
+                        items.push(1);
+                    } else {
+                        items.push(0);
+                    }
+                }
+            }
+        }
+    }
+    let average = getAverageItem(items);
+
+    return (average * 100).toFixed(2);
 }
 
 //find average data point of this column
