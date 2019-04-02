@@ -60,7 +60,18 @@ function showOverall(currentRobotNumber, labels, robots) {
     fullSummary += "<br/>";
     let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
     fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
+    fullSummary += "<br/>";
 
+    fullSummary += "<br/>";
+
+    //show average drive rating
+    fullSummary += "Drive Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "drive rating"));
+    fullSummary += "<br/>";
+    fullSummary += "Intake Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "intake rating"));
+    fullSummary += "<br/>";
+    fullSummary += "Defense Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "defence rating"));
+    fullSummary += "<br/>";
+    
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
 
@@ -272,11 +283,34 @@ function getMinItems(items) {
 function getAverageItem(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        sum += parseInt(items[i]);
+        sum += parseFloat(items[i]);
     }
 
     //convert sum to average
     return sum / items.length;
+}
+
+//like the average function but ignores numbers that are zero
+//specifically for averaging ratings
+function getAverageRatingItem(items) {
+    let sum = 0;
+    //amount of items that are zero and should be ignored
+    let numItemsToIgnore = 0;
+    for (let i = 0; i < items.length; i++) {
+        if (parseFloat(items[i]) === 0) {
+            numItemsToIgnore++;
+        } else {
+            sum += parseFloat(items[i]);
+        }
+    }
+
+    //convert sum to average
+    let average = sum / (items.length - numItemsToIgnore);
+    if (numItemsToIgnore == items.length) {
+        return "N/A";
+    } else {
+        return average;
+    }
 }
 
 //nice looking string average
