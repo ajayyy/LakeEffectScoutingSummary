@@ -65,11 +65,11 @@ function showOverall(currentRobotNumber, labels, robots) {
     fullSummary += "<br/>";
 
     //show average drive rating
-    fullSummary += "Drive Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "drive rating"));
+    fullSummary += "Drive Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "drive rating"));
     fullSummary += "<br/>";
-    fullSummary += "Intake Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "intake rating"));
+    fullSummary += "Intake Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "intake rating"));
     fullSummary += "<br/>";
-    fullSummary += "Defense Rating: " + getAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "defence rating"));
+    fullSummary += "Defense Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "defence rating"));
     fullSummary += "<br/>";
     
     document.getElementById('overallSummary').innerHTML = fullSummary;
@@ -314,6 +314,16 @@ function getAverageRatingItem(items) {
 }
 
 //nice looking string average
+function getParsedAverageRatingItem(items) {
+    let average = getAverageRatingItem(items);
+    if ((typeof average) == "number") {
+        return average.toFixed(2);
+    } else {
+        return average;
+    }
+}
+
+//nice looking string percent average
 function getParsedAverageItem(items) {
     return (getAverageItem(items) * 100).toFixed(2);
 }
