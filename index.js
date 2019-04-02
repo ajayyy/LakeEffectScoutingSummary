@@ -34,34 +34,41 @@ function showOverall(currentRobotNumber, labels, robots) {
 
     fullSummary += "<br/>";
 
-    fullSummary += "Death Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "died") + "%";
+    let deathRateItems = getColumnItems(currentRobotNumber, labels, robots, "died");
+    fullSummary += "Death Rate: " + getRateOfItems(deathRateItems) + " | " + getParsedAverageItem(deathRateItems) + "%";
     fullSummary += "<br/>";
-    fullSummary += "Defense Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "defense") + "%";
+    let defenseRateItems = getColumnItems(currentRobotNumber, labels, robots, "defense");
+    fullSummary += "Defense Rate: " + getRateOfItems(defenseRateItems) + " | " + getParsedAverageItem(defenseRateItems) + "%";
     fullSummary += "<br/>";
-    fullSummary += "Tipped Rate: " + getColumnAverage(currentRobotNumber, labels, robots, "tipped") + "%";
+    let tippedRateItems = getColumnItems(currentRobotNumber, labels, robots, "tipped");
+    fullSummary += "Tipped Rate: " + getRateOfItems(tippedRateItems) + " | " + getParsedAverageItem(tippedRateItems) + "%";
     fullSummary += "<br/>";
 
     fullSummary += "<br/>";
 
-    fullSummary += "Level 2 Successful Climb Rate: " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed") + "%";
+    let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
+    fullSummary += "Level 2 Successful Climb Rate: " + getRateOfItems(level2ClimbSuccessRateItems) + " | " + getParsedAverageItem(level2ClimbSuccessRateItems) + "%";
     fullSummary += "<br/>";
-    fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb") + "%";
+    let level2ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb");
+    fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
     fullSummary += "<br/>";
 
     fullSummary += "<br/>";
     
-    fullSummary += "Level 3 Successful Climb Rate: " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed") + "%";
+    let level3ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed");
+    fullSummary += "Level 3 Successful Climb Rate: " + getRateOfItems(level3ClimbSuccessRateItems) + " | " + getParsedAverageItem(level3ClimbSuccessRateItems) + "%";
     fullSummary += "<br/>";
-    fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getColumnTextPercentage(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb") + "%";
+    let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
+    fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
 
     document.getElementById('overallSummary').innerHTML = fullSummary;
 }
 
 //find the amount of times a certain string has been saved in a column in a percentage
-//Ex. Percentage of a successful level 2 climb
+//Ex. number of successful level 2 climb
 //only if the first search term AND the second are true (in the current column and the next column)
 //Ex. First column: "level 2", second column: "success"
-function getColumnTextPercentage(currentRobotNumber, labels, robots, collumnTerm, rowSearch, nextColumnSearch) {
+function getColumnTextItems(currentRobotNumber, labels, robots, collumnTerm, rowSearch, nextColumnSearch) {
     //find average of this column
     let column = getColumnIndex(labels, collumnTerm);
     let items = [];
@@ -82,14 +89,12 @@ function getColumnTextPercentage(currentRobotNumber, labels, robots, collumnTerm
             }
         }
     }
-    let average = getAverageItem(items);
 
-    return (average * 100).toFixed(2);
+    return items;
 }
 
-//find average data point of this column
-function getColumnAverage(currentRobotNumber, labels, robots, searchTerm) {
-    //find average of this column
+//find data points of this column
+function getColumnItems(currentRobotNumber, labels, robots, searchTerm) {
     let column = getColumnIndex(labels, searchTerm);
     let items = [];
     for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
@@ -110,9 +115,8 @@ function getColumnAverage(currentRobotNumber, labels, robots, searchTerm) {
             }
         }
     }
-    let average = getAverageItem(items);
 
-    return (average * 100).toFixed(2);
+    return items;
 }
 
 //returns a summary message for this action
@@ -273,4 +277,22 @@ function getAverageItem(items) {
 
     //convert sum to average
     return sum / items.length;
+}
+
+//nice looking string average
+function getParsedAverageItem(items) {
+    return (getAverageItem(items) * 100).toFixed(2);
+}
+
+//gets how many times 1 is in items
+function getRateOfItems(items) {
+    let sum = 0;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i] === "1" || items[i] === 1) {
+            sum ++;
+        }
+    }
+
+    //convert sum to average
+    return sum + "/" + items.length;
 }
