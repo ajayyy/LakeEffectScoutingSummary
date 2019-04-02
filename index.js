@@ -330,3 +330,10 @@ function getRateOfItems(items) {
     //convert sum to average
     return sum + "/" + items.length;
 }
+
+function inputKeyPress(event) {
+    //check if an enter is pressed
+    if (event.key === "Enter") {
+        showData();
+    }
+}
