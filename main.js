@@ -10,6 +10,9 @@ var robots = [];
 //the labels at the top of each file, only pulled once
 var labels = null;
 
+//last match updated on
+var lastUpdated = -1;
+
 function createWindow() {
     // Create the browser window.
     window = new BrowserWindow({ width: 800, height: 600 });
@@ -53,6 +56,13 @@ function loadData() {
 
                 for (let s = 0; s < lines.length; s++) {
                     robotData.push(lines[s].split(","));
+
+                    //find match number
+                    if (s > 0) {
+                        if (parseInt(lines[s].split(",")[0]) > lastUpdated) {
+                            lastUpdated = parseInt(lines[s].split(",")[0]);
+                        }
+                    }
                 }
 
                 robot.data = robotData;
@@ -92,6 +102,9 @@ ipcMain.on('createAutoSummary', function (event, args) {
     let result = getAutoSummary(args, labels, robots);
 
     event.sender.send("showAutoSummary", result);
+});
+ipcMain.on('getLastUpdated', function (event, args) {
+    event.sender.send("showLastUpdated", lastUpdated);
 });
 
 //Classes
