@@ -186,6 +186,39 @@ function getOverallData(currentRobotNumber, labels, robots) {
     fullSummary += "Defense Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "defence rating"));
     fullSummary += "<br/>";
 
+    fullSummary += "<br/>";
+
+    //show if they start with cargo or hatch
+    let startingWithCargoRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects cargo");
+    fullSummary += "Starting With Cargo: " + getRateOfItems(startingWithCargoRateItems) + " | " + getParsedAverageItem(startingWithCargoRateItems) + "%";
+    fullSummary += "<br/>";
+    let startingWithHatchRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects hatch");
+    fullSummary += "Starting With Hatch: " + getRateOfItems(startingWithHatchRateItems) + " | " + getParsedAverageItem(startingWithHatchRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    //starting platform
+    let level1StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 1 (hab)");
+    fullSummary += "Starting On Level 1 (HAB): " + getRateOfItems(level1StartRateItems) + " | " + getParsedAverageItem(level1StartRateItems) + "%";
+    fullSummary += "<br/>";
+    let level2StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 2");
+    fullSummary += "Starting On Level 2: " + getRateOfItems(level2StartRateItems) + " | " + getParsedAverageItem(level2StartRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    //starting position
+    let rightStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "right");
+    fullSummary += "Starting On The Right: " + getRateOfItems(rightStartRateItems) + " | " + getParsedAverageItem(rightStartRateItems) + "%";
+    fullSummary += "<br/>";
+    let centerStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "center");
+    fullSummary += "Starting In The Center: " + getRateOfItems(centerStartRateItems) + " | " + getParsedAverageItem(centerStartRateItems) + "%";
+    fullSummary += "<br/>";
+    let leftStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "left");
+    fullSummary += "Starting On The Left: " + getRateOfItems(leftStartRateItems) + " | " + getParsedAverageItem(leftStartRateItems) + "%";
+    fullSummary += "<br/>";
+
     return fullSummary;
 }
 
@@ -289,6 +322,34 @@ function getColumnTextItems(currentRobotNumber, labels, robots, collumnTerm, row
                 if (robots[currentRobot].data[matchNum].length > 1) {
                     if (robots[currentRobot].data[matchNum][column].toLowerCase() === rowSearch &&
                         robots[currentRobot].data[matchNum][column + 1].toLowerCase() === nextColumnSearch) {
+                        items.push(1);
+                    } else {
+                        items.push(0);
+                    }
+                }
+            }
+        }
+    }
+
+    return items;
+}
+
+//find the amount of times a certain string has been saved in a column in a percentage
+//Ex. percentage of time starting at level 2
+//only if the first search term is true
+//Ex. First column: "level 2"
+function getColumnTextItems(currentRobotNumber, labels, robots, collumnTerm, rowSearch) {
+    //find average of this column
+    let column = getColumnIndex(labels, collumnTerm);
+    let items = [];
+    for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
+        if (robots[currentRobot].robotNumber === currentRobotNumber) {
+            //all the matches for this robot
+            //starts at 1 to skip the labels
+            for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                //otherwise it's just a line break at the end of the file
+                if (robots[currentRobot].data[matchNum].length > 1) {
+                    if (robots[currentRobot].data[matchNum][column].toLowerCase() === rowSearch) {
                         items.push(1);
                     } else {
                         items.push(0);
