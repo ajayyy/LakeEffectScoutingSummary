@@ -111,6 +111,11 @@ ipcMain.on('createAutoSummary', function (event, args) {
 
     event.sender.send("showAutoSummary", result);
 });
+ipcMain.on('createPreMatchSummary', function (event, args) {
+    let result = getPreMatchSummary(args, labels, robots);
+
+    event.sender.send("showPreMatchSummary", result);
+});
 ipcMain.on('createCommentsSummary', function (event, args) {
     let result = getCommentsSummary(args, labels, robots);
 
@@ -184,40 +189,6 @@ function getOverallData(currentRobotNumber, labels, robots) {
     fullSummary += "Intake Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "intake rating"));
     fullSummary += "<br/>";
     fullSummary += "Defense Rating: " + getParsedAverageRatingItem(getColumnItems(currentRobotNumber, labels, robots, "defence rating"));
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
-
-    //show if they start with cargo or hatch
-    let startingWithCargoRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects cargo");
-    fullSummary += "Starting With Cargo: " + getRateOfItems(startingWithCargoRateItems) + " | " + getParsedAverageItem(startingWithCargoRateItems) + "%";
-    fullSummary += "<br/>";
-    let startingWithHatchRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects hatch");
-    fullSummary += "Starting With Hatch: " + getRateOfItems(startingWithHatchRateItems) + " | " + getParsedAverageItem(startingWithHatchRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
-
-    //starting platform
-    let level1StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 1 (hab)");
-    fullSummary += "Starting On Level 1 (HAB): " + getRateOfItems(level1StartRateItems) + " | " + getParsedAverageItem(level1StartRateItems) + "%";
-    fullSummary += "<br/>";
-    let level2StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 2");
-    fullSummary += "Starting On Level 2: " + getRateOfItems(level2StartRateItems) + " | " + getParsedAverageItem(level2StartRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
-
-    //starting position
-    let rightStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "right");
-    fullSummary += "Starting On The Right: " + getRateOfItems(rightStartRateItems) + " | " + getParsedAverageItem(rightStartRateItems) + "%";
-    fullSummary += "<br/>";
-    let centerStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "center");
-    fullSummary += "Starting In The Center: " + getRateOfItems(centerStartRateItems) + " | " + getParsedAverageItem(centerStartRateItems) + "%";
-    fullSummary += "<br/>";
-    let leftStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "left");
-    fullSummary += "Starting On The Left: " + getRateOfItems(leftStartRateItems) + " | " + getParsedAverageItem(leftStartRateItems) + "%";
-    fullSummary += "<br/>";
 
     return fullSummary;
 }
@@ -271,6 +242,42 @@ function getAutoSummary(currentRobotNumber, labels, robots) {
     }
 
     return autoSummary;
+}
+
+function getPreMatchSummary(currentRobotNumber, labels, robots) {
+    let fullSummary = "";
+
+    //show if they start with cargo or hatch
+    let startingWithCargoRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects cargo");
+    fullSummary += "Starting With Cargo: " + getRateOfItems(startingWithCargoRateItems) + " | " + getParsedAverageItem(startingWithCargoRateItems) + "%";
+    fullSummary += "<br/>";
+    let startingWithHatchRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects hatch");
+    fullSummary += "Starting With Hatch: " + getRateOfItems(startingWithHatchRateItems) + " | " + getParsedAverageItem(startingWithHatchRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    //starting platform
+    let level1StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 1 (hab)");
+    fullSummary += "Starting On Level 1 (HAB): " + getRateOfItems(level1StartRateItems) + " | " + getParsedAverageItem(level1StartRateItems) + "%";
+    fullSummary += "<br/>";
+    let level2StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 2");
+    fullSummary += "Starting On Level 2: " + getRateOfItems(level2StartRateItems) + " | " + getParsedAverageItem(level2StartRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    //starting position
+    let rightStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "right");
+    fullSummary += "Starting On The Right: " + getRateOfItems(rightStartRateItems) + " | " + getParsedAverageItem(rightStartRateItems) + "%";
+    fullSummary += "<br/>";
+    let centerStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "center");
+    fullSummary += "Starting In The Center: " + getRateOfItems(centerStartRateItems) + " | " + getParsedAverageItem(centerStartRateItems) + "%";
+    fullSummary += "<br/>";
+    let leftStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "left");
+    fullSummary += "Starting On The Left: " + getRateOfItems(leftStartRateItems) + " | " + getParsedAverageItem(leftStartRateItems) + "%";
+
+    return fullSummary;
 }
 
 function getCommentsSummary(currentRobotNumber, labels, robots) {

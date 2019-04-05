@@ -1,5 +1,10 @@
 var electron = require('electron');
 
+function init() {
+    //start with the prematch summary hidden
+    toggleBox("preMatchSummaryContainer");
+}
+
 function loadData() {
     //show a quick summary of all the data for this robot
     var currentRobotNumber = document.getElementById('robotNumber').value;
@@ -7,10 +12,13 @@ function loadData() {
     //set loading indicators
     document.getElementById('overallSummary').innerHTML = "Loading...";
     document.getElementById('autoSummary').innerHTML = "Loading...";
+    document.getElementById('preMatchSummary').innerHTML = "Loading...";
+    document.getElementById('commentsSummary').innerHTML = "Loading...";
 
     //start the processing
     electron.ipcRenderer.send("createOverallSummary", currentRobotNumber);
     electron.ipcRenderer.send("createAutoSummary", currentRobotNumber);
+    electron.ipcRenderer.send("createPreMatchSummary", currentRobotNumber);
     electron.ipcRenderer.send("createCommentsSummary", currentRobotNumber);
     electron.ipcRenderer.send("getLastUpdated");
 
@@ -24,6 +32,10 @@ electron.ipcRenderer.on('showOverallSummary', function (event, result) {
 
 electron.ipcRenderer.on('showAutoSummary', function (event, result) {
     document.getElementById('autoSummary').innerHTML = result;
+});
+
+electron.ipcRenderer.on('showPreMatchSummary', function (event, result) {
+    document.getElementById('preMatchSummary').innerHTML = result;
 });
 
 electron.ipcRenderer.on('showCommentsSummary', function (event, result) {

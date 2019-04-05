@@ -4,7 +4,7 @@
     <script src="index.js"></script>
 </head>
 
-<body>
+<body onload="init()">
    
     <input type="number" id="robotNumber" onkeypress="return inputKeyPress(event)" autofocus/>
 
@@ -35,6 +35,16 @@
 
     <div id="autoSummaryContainer" class="dataBox">
         <p id="autoSummary" class="summary">
+
+        </p>
+    </div>
+
+    <div id="preMatchLabel" onclick="toggleBox('preMatchSummaryContainer')">
+        <h3>Pre-match Info (click to hide/show)</h3>
+    </div>
+
+    <div id="preMatchSummaryContainer" class="dataBox">
+        <p id="preMatchSummary" class="summary">
 
         </p>
     </div>
