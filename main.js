@@ -13,6 +13,14 @@ var labels = null;
 //last match updated on
 var lastUpdated = -1;
 
+//setup replace all function https://stackoverflow.com/a/38015918/1985387
+String.prototype.replaceAll = function(search, replace) {
+    if (replace === undefined) {
+        return this.toString();
+    }
+    return this.split(search).join(replace);
+}
+
 function createWindow() {
     // Create the browser window.
     window = new BrowserWindow({ width: 800, height: 600 });
@@ -102,6 +110,11 @@ ipcMain.on('createAutoSummary', function (event, args) {
     let result = getAutoSummary(args, labels, robots);
 
     event.sender.send("showAutoSummary", result);
+});
+ipcMain.on('createCommentsSummary', function (event, args) {
+    let result = getCommentsSummary(args, labels, robots);
+
+    event.sender.send("showCommentsSummary", result);
 });
 ipcMain.on('getLastUpdated', function (event, args) {
     event.sender.send("showLastUpdated", lastUpdated);
@@ -225,6 +238,38 @@ function getAutoSummary(currentRobotNumber, labels, robots) {
     }
 
     return autoSummary;
+}
+
+function getCommentsSummary(currentRobotNumber, labels, robots) {
+    //will always be 0
+    let matchNumColumn = 0;
+    let commentColumn = getColumnIndex(labels, 'qualitative comments');
+    let nameColumn = getColumnIndex(labels, 'scout name');
+
+    let fullSummary = "";
+
+    for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
+        if (robots[currentRobot].robotNumber === currentRobotNumber) {
+            for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                //only if there is a comment
+                //second check is in case it's just a line break at the end of the file
+                if (robots[currentRobot].data[matchNum][commentColumn] != "" && robots[currentRobot].data[matchNum].length > 1) {
+                    let parsedComment = robots[currentRobot].data[matchNum][commentColumn];
+
+                    //replace all placeholder values with their real values
+                    parsedComment = parsedComment.replaceAll("||", "|").replaceAll("|n", "<br/>").replaceAll("|q", '"').replaceAll(";", ":")
+                        .replaceAll("|ob", "{").replaceAll("|cb", "}").replaceAll("|c", ",");
+                    
+                    fullSummary += "<p>" + parsedComment;
+                    fullSummary += "<span class='extraInfo'> <br/>";
+                    fullSummary += "Match " + robots[currentRobot].data[matchNum][matchNumColumn] + " By " + robots[currentRobot].data[matchNum][nameColumn];
+                    fullSummary += "<br/> </div class='extraInfo'> </p>";
+                }
+            }
+        }
+    }
+
+    return fullSummary;
 }
 
 //find the amount of times a certain string has been saved in a column in a percentage

@@ -11,6 +11,7 @@ function loadData() {
     //start the processing
     electron.ipcRenderer.send("createOverallSummary", currentRobotNumber);
     electron.ipcRenderer.send("createAutoSummary", currentRobotNumber);
+    electron.ipcRenderer.send("createCommentsSummary", currentRobotNumber);
     electron.ipcRenderer.send("getLastUpdated");
 
     //show robot photo
@@ -23,6 +24,10 @@ electron.ipcRenderer.on('showOverallSummary', function (event, result) {
 
 electron.ipcRenderer.on('showAutoSummary', function (event, result) {
     document.getElementById('autoSummary').innerHTML = result;
+});
+
+electron.ipcRenderer.on('showCommentsSummary', function (event, result) {
+    document.getElementById('commentsSummary').innerHTML = result;
 });
 
 electron.ipcRenderer.on('showLastUpdated', function (event, result) {

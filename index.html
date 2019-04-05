@@ -22,8 +22,8 @@
 
     <div id="overallSummaryContainer" class="dataBox">
         <p>
-            <img id="robot" width="50%" style="float: right; margin-right: 15;"/>
-            <div id="overallSummary">
+            <img id="robot" width="48%" style="float: right; margin-right: 15;"/>
+            <div id="overallSummary" class="summary">
 
             </div>
         </p>
@@ -34,7 +34,17 @@
     </div>
 
     <div id="autoSummaryContainer" class="dataBox">
-        <p id="autoSummary">
+        <p id="autoSummary" class="summary">
+
+        </p>
+    </div>
+
+    <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')">
+        <h3>Comments (click to hide/show)</h3>
+    </div>
+
+    <div id="commentsSummaryContainer" class="dataBox">
+        <p id="commentsSummary" class="summary">
 
         </p>
     </div>
