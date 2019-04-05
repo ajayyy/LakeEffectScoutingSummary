@@ -429,10 +429,15 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
     //find max
     let hitMaxItems = getMaxItems(hitItems);
 
-    //TODO: find minimum misses in the matches of the maximum (their best performance)
-    let missMaxItems = getMaxItems(missItems);
+    //the miss amount in ONLY the matches where the maximum amount of items were places
+    let maxMissItems = [];
+    for (let i = 0; i < hitMaxItems.length; i++) {
+        maxMissItems.push(missItems[hitMaxItems[i][1]]);
+    }
+    //it will find the minimum misses in the matches where they scored the most (the best performance)
+    let missMinItems = getMinItems(maxMissItems);
 
-    fullSummary += searchTerm + " Max " + hitMaxItems[0] + " : " + missMaxItems[0] + "<br/>";
+    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + "<br/>";
 
     //return resulted summary
     return fullSummary;
@@ -450,32 +455,33 @@ function getColumnIndex(labels, search) {
 
 function getMaxItems(items) {
     //there might be multiple items that are the maximum
-    let allMaxItems = [-1];
+    //second item is the match index
+    let allMaxItems = [[-1, 0]];
     for (let i = 0; i < items.length; i++) {
-        if (items[i] > allMaxItems[0]) {
-            if (items[i] == allMaxItems[0]) {
+        if (parseInt(items[i]) >= parseInt(allMaxItems[0][0])) {
+            if (items[i] === allMaxItems[0][0]) {
                 //already exists, multiple maximum items
-                allMaxItems.push(items[i]);
+                allMaxItems.push([items[i], i]);
             } else {
                 //set this as the maximum
-                allMaxItems = [items[i]];
+                allMaxItems = [[items[i], i]];
             }
         }
     }
-
+ 
     return allMaxItems;
 }
 
 function getMinItems(items) {
-    //there might be multiple items that are the maximum
+    //there might be multiple items that are the minimum
     let allMinItems = [-1];
     for (let i = 0; i < items.length; i++) {
-        if (items[i] < allMinItems[0] || allMinItems[0] == -1) {
+        if (parseInt(items[i]) <= parseInt(allMinItems[0]) || allMinItems[0] == -1) {
             if (items[i] == allMinItems[0]) {
-                //already exists, multiple maximum items
+                //already exists, multiple minimum items
                 allMinItems.push(items[i]);
             } else {
-                //set this as the maximum
+                //set this as the minimum
                 allMinItems = [items[i]];
             }
         }
