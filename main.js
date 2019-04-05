@@ -67,13 +67,36 @@ function loadData() {
 
                     //find match number
                     if (s > 0) {
+                        //update last updated to be the latest match number scouted
                         if (parseInt(lines[s].split(",")[0]) > lastUpdated) {
                             lastUpdated = parseInt(lines[s].split(",")[0]);
                         }
                     }
                 }
 
-                robot.data = robotData;
+                //sort robotData by match number
+                //start it with the labels, they should always be at the top
+                let robotDataSorted = [robotData[0]];
+
+                //start at 1 to ignore labels at the top of the csv file
+                for (let s = 1; s < robotData.length; s++) {
+                    for (let q = 1; q < robotData.length; q++) {
+                        //skip over if already dealt with
+                        if (robotDataSorted.includes(robotData[q])) continue;
+
+                        if (robotDataSorted.length == s) {
+                            //start it with a default number
+                            robotDataSorted.push([-1]);
+                        }
+
+                        if (robotDataSorted[s][0] === -1 || parseInt(robotData[q][0]) < parseInt(robotDataSorted[s][0])) {
+                            //this one is the lower one, it should be here (sorting from lowest to highest)
+                            robotDataSorted[s] = robotData[q];
+                        }
+                    }
+                }
+
+                robot.data = robotDataSorted;
 
                 //add to the full list of robots
                 robots.push(robot);
