@@ -4,9 +4,12 @@ function loadData() {
     //show a quick summary of all the data for this robot
     var currentRobotNumber = document.getElementById('robotNumber').value;
 
+    //set loading indicators
+    document.getElementById('overallSummary').innerHTML = "Loading...";
+    document.getElementById('autoSummary').innerHTML = "Loading...";
+
     //start the processing
     electron.ipcRenderer.send("createOverallSummary", currentRobotNumber);
-
     electron.ipcRenderer.send("createAutoSummary", currentRobotNumber);
 
     //show robot photo
