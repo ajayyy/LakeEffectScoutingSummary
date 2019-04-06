@@ -5,3 +5,11 @@
 .dataBox {
     border: 2px solid black;
 }
+
+.summary {
+    margin-left: 3px;
+}
+
+.extraInfo {
+    font-size: smaller;
+}

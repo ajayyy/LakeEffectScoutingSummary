@@ -4,12 +4,17 @@
     <script src="index.js"></script>
 </head>
 
-<body>
+<body onload="init()">
    
-    <input type="number" id="robotNumber"/>
+    <input type="number" id="robotNumber" onkeypress="return inputKeyPress(event)" autofocus/>
 
     <!–– Button to view data about the current robot !––>
-    <button onclick="showData()">View Data</button>
+    <button onclick="loadData()">View Data</button>
+
+    <!–– What match this data was last updated (latest match of data) !––>
+    <span id="lastUpdated">
+
+    </span>
 
     <div id="overallLabel" onclick="toggleBox('overallSummaryContainer')">
         <h3>Overall (click to hide/show)</h3>
@@ -17,8 +22,8 @@
 
     <div id="overallSummaryContainer" class="dataBox">
         <p>
-            <img id="robot" width="350" style="float: right; margin-right: 15;"/>
-            <div id="overallSummary">
+            <img id="robot" width="48%" style="float: right; margin-right: 15;"/>
+            <div id="overallSummary" class="summary">
 
             </div>
         </p>
@@ -29,7 +34,27 @@
     </div>
 
     <div id="autoSummaryContainer" class="dataBox">
-        <p id="autoSummary">
+        <p id="autoSummary" class="summary">
+
+        </p>
+    </div>
+
+    <div id="preMatchLabel" onclick="toggleBox('preMatchSummaryContainer')">
+        <h3>Pre-match Info (click to hide/show)</h3>
+    </div>
+
+    <div id="preMatchSummaryContainer" class="dataBox">
+        <p id="preMatchSummary" class="summary">
+
+        </p>
+    </div>
+
+    <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')">
+        <h3>Comments (click to hide/show)</h3>
+    </div>
+
+    <div id="commentsSummaryContainer" class="dataBox">
+        <p id="commentsSummary" class="summary">
 
         </p>
     </div>
