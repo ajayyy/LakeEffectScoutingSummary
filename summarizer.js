@@ -301,7 +301,7 @@ function getComplexActionSummary(currentRobotNumber, labels, robots, searchTerm)
 
     let fullSummary = "";
 
-    fullSummary += "<span id='" + searchTerm + "' onclick='toggleBox(\"extraSummary_" + searchTerm + "\")'>";
+    fullSummary += "<span class='clickable' id='" + searchTerm + "' onclick='toggleBox(\"extraSummary_" + searchTerm + "\")'>";
     fullSummary += mainSummary;
     fullSummary += "</span>";
 
