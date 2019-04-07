@@ -13,3 +13,8 @@
 .extraInfo {
     font-size: smaller;
 }
+
+.extraSummary {
+    margin-left: 20px;
+    font-size: 14px;
+}

@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const summarizer = require("./summarizer");

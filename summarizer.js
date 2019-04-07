@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 //export the functions
 module.exports = {
     getOverallData: getOverallData,
@@ -6,22 +8,28 @@ module.exports = {
     getCommentsSummary: getCommentsSummary
 }
 
+//the specifics that can be added to the searches (used by getActionSummary)
+const cargoShipExtras = ['Side'];
+const rocketHatchExtras = ['Far', 'Close', 'Level 1', 'Level 2', 'Level 3'];
+//cargo has no far and close, only levels on the rocket
+const rocketCargoExtras = ['Level 1', 'Level 2', 'Level 3'];
+
 function getOverallData(currentRobotNumber, labels, robots) {
     let fullSummary = "";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Cargo");
+    fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Cargo");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Cargo");
+    fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Cargo");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Hatch");
+    fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Rocket Hatch");
 
     fullSummary += "<br/>";
 
-    fullSummary += getActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Hatch");
+    fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, "TeleOp Full Cargo Ship Hatch");
 
     fullSummary += "<br/>";
 
@@ -265,6 +273,45 @@ function getColumnItems(currentRobotNumber, labels, robots, searchTerm) {
     }
 
     return items;
+}
+
+//uses getActionSummary to get a simple action summary along with more complicated
+//summary details when clicked
+//returns a string
+function getComplexActionSummary(currentRobotNumber, labels, robots, searchTerm) {
+    let mainSummary = getActionSummary(currentRobotNumber, labels, robots, searchTerm);
+
+    //load the more detailed summary, and put it in a hidden box
+    let extraSummary = "";
+    let extras = [];
+    if (searchTerm.includes("Cargo Ship")) {
+        extras = cargoShipExtras;
+    } else if (searchTerm.includes("Rocket") && searchTerm.includes("Hatch")) {
+        extras = rocketHatchExtras;
+    } else if (searchTerm.includes("Rocket") && searchTerm.includes("Cargo")) {
+        extras = rocketCargoExtras;
+    }
+
+    //go through the extra terms and get the extra summaries if any
+    for (let i = 0; i < extras.length; i++ ) {
+        let extraSearchTerm = searchTerm.replace("Full", extras[i]);
+
+        extraSummary += getActionSummary(currentRobotNumber, labels, robots, extraSearchTerm);
+    }
+
+    let fullSummary = "";
+
+    fullSummary += "<span id='" + searchTerm + "' onclick='toggleBox(\"extraSummary_" + searchTerm + "\")'>";
+    fullSummary += mainSummary;
+    fullSummary += "</span>";
+
+    //add extra summary info
+    //start it disabled by hiding in the style
+    fullSummary += "<div class='extraSummary' id='extraSummary_" + searchTerm + "') style='display: none;'>";
+    fullSummary += extraSummary;
+    fullSummary += "</div>";
+
+    return fullSummary;
 }
 
 //returns a summary message for this action

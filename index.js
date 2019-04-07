@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var electron = require('electron');
 
 function init() {
