@@ -49,6 +49,30 @@
         </p>
     </div>
 
+    <div id="customLabel" onclick="toggleBox('customSummaryContainer')" class="clickable">
+        <h3>Custom Info (click to hide/show)</h3>
+    </div>
+
+    <div id="customSummaryContainer" class="dataBox">
+
+        <table>
+            <tr>
+                <td>
+                    <input id="customSearchBox" onkeypress="return customSearchKeyPressed(event)"/>
+
+                    <p id="customSearch" class="summary">
+
+                    </p>
+                </td>
+                <td>
+                    <p id="customSummary" class="summary">
+
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')" class="clickable">
         <h3>Comments (click to hide/show)</h3>
     </div>

@@ -151,6 +151,10 @@ ipcMain.on('getLastUpdated', function (event, args) {
     event.sender.send("showLastUpdated", lastUpdated);
 });
 
+ipcMain.on('getLabels', function (event, args) {
+    event.sender.send("showLabels", labels);
+});
+
 //Classes
 class Robot {
     constructor(robotNumber, data) {
