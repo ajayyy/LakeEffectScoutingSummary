@@ -94,9 +94,16 @@ function inputKeyPress(event) {
 }
 
 //for the custom summary searching functionality
-function customSearchKeyPressed(event) {
+function customSearchKeyUp(event) {
     //event can be ignored, and instead what's in the box can be used
     let searchTerm = document.getElementById("customSearchBox").value;
+
+    if (searchTerm === "") {
+        //just show everything
+        showLabels(labels);
+
+        return;
+    }
 
     //this will include all the labels that are part of this search
     let searchedLabels = [];
