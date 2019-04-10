@@ -3,6 +3,8 @@
 var electron = require("electron");
 
 var labels = [];
+//the labels shown from this search
+var searchLabels = [];
 
 function init() {
     //start with the prematch summary hidden
@@ -67,10 +69,15 @@ electron.ipcRenderer.on("showLabels", function (event, result) {
 });
 
 function showLabels(labels) {
+    //set the search labels to the labels that will be used here
+    searchLabels = labels;
+
     let labelsString = "";
 
     for (let i = 0; i < labels.length; i++) {
-        labelsString += labels[i] + "<br/>";
+        //make each item be in a clickable div
+        labelsString += "<div id='" + labels[i] + "' onclick='labelClicked(" + i + ")'>";
+        labelsString += labels[i] + "</div>";
     }
 
     document.getElementById("customSearch").innerHTML = labelsString;
@@ -117,4 +124,15 @@ function customSearchKeyUp(event) {
     }
 
     showLabels(searchedLabels);
+}
+
+function labelClicked(index) {
+    if (document.getElementById(searchLabels[index]).style.backgroundColor === "black") {
+        //it is already selected, deselect it
+        document.getElementById(searchLabels[index]).style.backgroundColor = "white";
+        document.getElementById(searchLabels[index]).style.color = "black";
+    } else {
+        document.getElementById(searchLabels[index]).style.backgroundColor = "black";
+        document.getElementById(searchLabels[index]).style.color = "white";
+    }
 }
