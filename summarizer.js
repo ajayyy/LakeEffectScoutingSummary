@@ -382,7 +382,27 @@ function getActionSummary(currentRobotNumber, labels, robots, searchTerm) {
     //it will find the minimum misses in the matches where they scored the most (the best performance)
     let missMinItems = getMinItems(maxMissItems);
 
-    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + "<br/>";
+    //get match number index to show what match this happened in
+    let matchNumColumn = getColumnIndex(labels, "match");
+
+    //string of what match numbers this max happened in
+    let matchNumbersOfMaximums = "";
+    for (let i = 0; i < hitMaxItems.length; i++) {
+        matchNumbersOfMaximums += robots[matchNumColumn].data[hitMaxItems[i][1]][matchNumColumn];
+
+        if (i != hitMaxItems.length - 1) {
+            //if it is not the last index
+            matchNumbersOfMaximums += ", ";
+        }
+    }
+
+    if (hitMaxItems[0][0] === "0") {
+        //there is no maximum, so it doesn't matter
+        //it would just list every match
+        matchNumbersOfMaximums = "N/A";
+    }
+
+    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + " in match " + matchNumbersOfMaximums + "<br/>";
 
     //return resulted summary
     return fullSummary;
