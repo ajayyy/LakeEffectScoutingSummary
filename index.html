@@ -55,22 +55,27 @@
 
     <div id="customSummaryContainer" class="dataBox">
 
+        <span id="customSummaryTable" style="float: right;">
+            <table>
+                <p id="customSummary" class="summary">
+
+                </p>
+            </table>
+        </span>
+
+        <input id="customSearchBox" onkeyup="return customSearchKeyUp(event)"/>
+
+        <!-- One column table allows the background color on text to not continue on forever -->
         <table>
             <tr>
                 <td>
-                    <input id="customSearchBox" onkeyup="return customSearchKeyUp(event)"/>
-
                     <p id="customSearch" class="summary">
-
-                    </p>
-                </td>
-                <td>
-                    <p id="customSummary" class="summary">
 
                     </p>
                 </td>
             </tr>
         </table>
+
     </div>
 
     <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')" class="clickable">

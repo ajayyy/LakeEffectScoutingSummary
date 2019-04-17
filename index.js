@@ -6,6 +6,11 @@ var labels = [];
 //the labels shown from this search
 var searchLabels = [];
 
+var openCustomDataPoints = [];
+var openCustomDataLabels = [];
+
+var currentRobotNumber;
+
 function init() {
     //start with the prematch summary hidden
     toggleBox("preMatchSummaryContainer");
@@ -19,7 +24,7 @@ function init() {
 
 function loadData() {
     //show a quick summary of all the data for this robot
-    var currentRobotNumber = document.getElementById("robotNumber").value;
+    currentRobotNumber = document.getElementById("robotNumber").value;
 
     //set loading indicators
     document.getElementById("overallSummary").innerHTML = "Loading...";
@@ -67,6 +72,43 @@ electron.ipcRenderer.on("showLabels", function (event, result) {
 
     showLabels(labels);
 });
+
+electron.ipcRenderer.on("showDataForLabel", function (event, label, result) {
+    openCustomDataLabels.push(label);
+    openCustomDataPoints.push(result);
+
+    showCustomSummary();
+});
+
+function showCustomSummary() {
+    let summary = "<table>";
+
+    //add labels to table
+    summary += "<tr>";
+
+    for (let i = 0; i < openCustomDataLabels.length; i++) {
+        summary += "<td><u>" + openCustomDataLabels[i] + "</u></td>";
+    }
+
+    summary += "</tr>";
+
+    //adds all the custom data points in collumns
+    if (openCustomDataPoints.length > 0) {
+        for (let i = 0; i < openCustomDataPoints[0].length; i++) {
+            summary += "<tr>";
+    
+            for (let s = 0; s < openCustomDataPoints.length; s++) {
+                summary += "<td>" + openCustomDataPoints[s][i] + "</td>";
+            }
+    
+            summary += "</tr>";
+        }
+    }
+
+    summary += "</table>";
+
+    document.getElementById("customSummary").innerHTML = summary;
+}
 
 function showLabels(labels) {
     //set the search labels to the labels that will be used here
@@ -126,13 +168,37 @@ function customSearchKeyUp(event) {
     showLabels(searchedLabels);
 }
 
+//for the labels in the custom summary view
+//allows the user to view the raw data, but only the ones they select
 function labelClicked(index) {
     if (document.getElementById(searchLabels[index]).style.backgroundColor === "black") {
         //it is already selected, deselect it
         document.getElementById(searchLabels[index]).style.backgroundColor = "white";
         document.getElementById(searchLabels[index]).style.color = "black";
+
+        //remove this from the custom data view
+        let customDataIndex = getLabelIndex(searchLabels[index]);
+
+        openCustomDataLabels.splice(customDataIndex, 1);
+        openCustomDataPoints.splice(customDataIndex, 1);
+
+        //update the view
+        showCustomSummary();
     } else {
         document.getElementById(searchLabels[index]).style.backgroundColor = "black";
         document.getElementById(searchLabels[index]).style.color = "white";
+
+        //get the data for this label
+        electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, searchLabels[index]);
     }
+}
+
+function getLabelIndex(labels, search) {
+    for (let i = 0; i < labels.length; i++) {
+        if (labels[i].toLowerCase().includes(search)) {
+            return i;
+        }
+    }
+
+    return -1;
 }

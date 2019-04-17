@@ -155,6 +155,13 @@ ipcMain.on('getLabels', function (event, args) {
     event.sender.send("showLabels", labels);
 });
 
+//gets data under a specific label
+ipcMain.on('getDataForLabel', function (event, robotNumber, searchTerm) {
+    let data = summarizer.getDataForLabel(robotNumber, labels, robots, searchTerm.toLowerCase());
+
+    event.sender.send("showDataForLabel", searchTerm, data);
+});
+
 //Classes
 class Robot {
     constructor(robotNumber, data) {

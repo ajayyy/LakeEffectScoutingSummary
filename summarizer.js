@@ -5,7 +5,8 @@ module.exports = {
     getOverallData: getOverallData,
     getAutoSummary: getAutoSummary,
     getPreMatchSummary: getPreMatchSummary,
-    getCommentsSummary: getCommentsSummary
+    getCommentsSummary: getCommentsSummary,
+    getDataForLabel: getDataForLabel
 }
 
 //the specifics that can be added to the searches (used by getActionSummary)
@@ -192,6 +193,10 @@ function getCommentsSummary(currentRobotNumber, labels, robots) {
     return fullSummary;
 }
 
+function getDataForLabel(currentRobotNumber, labels, robots, searchTerm) {
+    return getColumnRawItems(currentRobotNumber, labels, robots, searchTerm);
+}
+
 //find the amount of times a certain string has been saved in a column in a percentage
 //Ex. number of successful level 2 climb
 //only if the first search term AND the second are true (in the current column and the next column)
@@ -241,6 +246,27 @@ function getColumnTextItems(currentRobotNumber, labels, robots, collumnTerm, row
                     } else {
                         items.push(0);
                     }
+                }
+            }
+        }
+    }
+
+    return items;
+}
+
+//find data points of this column
+//doesn't convert booleans to 0s and 1s
+function getColumnRawItems(currentRobotNumber, labels, robots, searchTerm) {
+    let column = getColumnIndex(labels, searchTerm);
+    let items = [];
+    for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
+        if (robots[currentRobot].robotNumber === currentRobotNumber) {
+            //all the matches for this robot
+            //starts at 1 to skip the labels
+            for (let matchNum = 1; matchNum < robots[currentRobot].data.length; matchNum++) {
+                //otherwise it's just a line break at the end of the file
+                if (robots[currentRobot].data[matchNum].length > 1) {
+                    items.push(robots[currentRobot].data[matchNum][column]);
                 }
             }
         }

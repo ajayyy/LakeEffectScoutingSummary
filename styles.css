@@ -22,3 +22,7 @@
 .clickable {
     cursor: pointer;
 }
+
+#customSummaryTable {
+    margin-right: 15px;
+}
