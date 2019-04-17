@@ -139,7 +139,7 @@ function showLabels(labels) {
 
     for (let i = 0; i < labels.length; i++) {
         //make each item be in a clickable div
-        labelsString += "<div id='" + labels[i] + "' onclick='labelClicked(" + i + ")'>";
+        labelsString += "<div id='" + labels[i] + "' onclick='labelClicked(" + i + ")' class='clickable'>";
         labelsString += labels[i] + "</div>";
     }
 
