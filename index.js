@@ -9,7 +9,7 @@ var searchLabels = [];
 var openCustomDataPoints = [];
 var openCustomDataLabels = [];
 
-var currentRobotNumber;
+var currentRobotNumber = null;
 
 function init() {
     //start with the prematch summary hidden
@@ -41,6 +41,9 @@ function loadData() {
 
     //show robot photo
     document.getElementById("robot").src = "photos/" + currentRobotNumber + ".JPG";
+
+    //reload custom info
+    showCustomSummary();
 }
 
 electron.ipcRenderer.on("showOverallSummary", function (event, result) {
@@ -128,7 +131,7 @@ function showLabels(labels) {
 function toggleBox(id) {
     if (document.getElementById(id).style.display === "none") {
         //enable it
-        document.getElementById(id).style.display = "block";
+        document.getElementById(id).removeAttribute("style");
     } else {
         //disable it
         document.getElementById(id).style.display = "none";
@@ -171,6 +174,11 @@ function customSearchKeyUp(event) {
 //for the labels in the custom summary view
 //allows the user to view the raw data, but only the ones they select
 function labelClicked(index) {
+    if (currentRobotNumber === null) {
+        //no robot yet
+        return;
+    }
+
     if (document.getElementById(searchLabels[index]).style.backgroundColor === "black") {
         //it is already selected, deselect it
         document.getElementById(searchLabels[index]).style.backgroundColor = "white";
