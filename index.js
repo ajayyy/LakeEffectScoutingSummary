@@ -70,8 +70,9 @@ electron.ipcRenderer.on("showLabels", function (event, result) {
     labels = Array.from(result);
 
     //remove unneeded labels
-    labels.splice(0, 2);
-    labels.splice(labels.length - 4, 3);
+    labels.splice(1, 1);
+    labels.splice(labels.length - 4, 1);
+    labels.splice(labels.length - 2, 1);
 
     showLabels(labels);
 });
