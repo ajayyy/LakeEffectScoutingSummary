@@ -16,7 +16,7 @@
 
     </span>
 
-    <div id="overallLabel" onclick="toggleBox('overallSummaryContainer')">
+    <div id="overallLabel" onclick="toggleBox('overallSummaryContainer')" class="clickable">
         <h3>Overall (click to hide/show)</h3>
     </div>
 
@@ -29,7 +29,7 @@
         </p>
     </div>
 
-    <div id="autoLabel" onclick="toggleBox('autoSummaryContainer')">
+    <div id="autoLabel" onclick="toggleBox('autoSummaryContainer')" class="clickable">
         <h3>Sandstorm Period (click to hide/show)</h3>
     </div>
 
@@ -39,7 +39,7 @@
         </p>
     </div>
 
-    <div id="preMatchLabel" onclick="toggleBox('preMatchSummaryContainer')">
+    <div id="preMatchLabel" onclick="toggleBox('preMatchSummaryContainer')" class="clickable">
         <h3>Pre-match Info (click to hide/show)</h3>
     </div>
 
@@ -49,7 +49,39 @@
         </p>
     </div>
 
-    <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')">
+    <div id="customLabel" onclick="toggleBox('customSummaryContainer')" class="clickable">
+        <h3>Custom Info (click to hide/show)</h3>
+    </div>
+
+    <div id="customSummaryContainer" class="dataBox tableDataBox">
+
+        <!-- Not a real table, but a table with just two columns for better centering support -->
+        <span class="column">
+            <input id="customSearchBox" onkeyup="return customSearchKeyUp(event)"/>
+
+            <!-- One column table allows the background color on text to not continue on forever -->
+            <table>
+                <tr>
+                    <td>
+                        <p id="customSearch" class="summary">
+    
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </span>
+
+        <span id="customSummaryTable" class="column">
+            <table>
+                <p id="customSummary" class="summary">
+
+                </p>
+            </table>
+        </span>
+
+    </div>
+
+    <div id="commentsLabel" onclick="toggleBox('commentsSummaryContainer')" class="clickable">
         <h3>Comments (click to hide/show)</h3>
     </div>
 

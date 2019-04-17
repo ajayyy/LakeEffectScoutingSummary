@@ -13,3 +13,20 @@
 .extraInfo {
     font-size: smaller;
 }
+
+.extraSummary {
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.tableDataBox {
+    display: flex;
+}
+
+.column {
+    flex: 50%;
+}
