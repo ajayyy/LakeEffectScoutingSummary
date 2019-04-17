@@ -43,7 +43,7 @@ function loadData() {
     document.getElementById("robot").src = "photos/" + currentRobotNumber + ".JPG";
 
     //reload custom info
-    showCustomSummary();
+    reloadCustomSummary();
 }
 
 electron.ipcRenderer.on("showOverallSummary", function (event, result) {
@@ -82,6 +82,24 @@ electron.ipcRenderer.on("showDataForLabel", function (event, label, result) {
 
     showCustomSummary();
 });
+
+//go through the custom summary and get new data from the server
+function reloadCustomSummary() {
+    //get current labels
+    let customLabels = Array.from(openCustomDataLabels);
+
+    //reset data
+    openCustomDataLabels = [];
+    openCustomDataPoints = [];
+
+    //empty the page by showing nothing
+    showCustomSummary();
+
+    //call to get the new data
+    for (let i = 0; i < customLabels.length; i++) {
+        electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, customLabels[i]);
+    }
+}
 
 function showCustomSummary() {
     let summary = "<table>";
