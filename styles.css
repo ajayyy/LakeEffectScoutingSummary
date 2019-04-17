@@ -28,5 +28,5 @@
 }
 
 .column {
-    flex: 50%;
+    flex: content;
 }
