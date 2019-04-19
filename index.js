@@ -13,10 +13,10 @@ var currentRobotNumber = null;
 
 function init() {
     //start with the prematch summary hidden
-    toggleBox("preMatchSummaryContainer");
+    disableBox("preMatchSummaryContainer");
 
     //start with the custom summary hidden
-    toggleBox("customSummaryContainer");
+    disableBox("customSummaryContainer");
 
     //get the labels
     electron.ipcRenderer.send("getLabels");
@@ -78,8 +78,10 @@ electron.ipcRenderer.on("showLabels", function (event, result) {
 });
 
 electron.ipcRenderer.on("showDataForLabel", function (event, label, result) {
-    openCustomDataLabels.push(label);
-    openCustomDataPoints.push(result);
+    if (!openCustomDataLabels.includes(label) && !openCustomDataPoints.includes(result)) {
+        openCustomDataLabels.push(label);
+        openCustomDataPoints.push(result);
+    }
 
     showCustomSummary();
 });
@@ -140,7 +142,7 @@ function showLabels(labels) {
 
     for (let i = 0; i < labels.length; i++) {
         //make each item be in a clickable div
-        labelsString += "<div id='" + labels[i] + "' onclick='labelClicked(" + i + ")' class='clickable'>";
+        labelsString += "<div id='" + labels[i] + "' onclick='labelClickedByIndex(" + i + ")' class='clickable'>";
         labelsString += labels[i] + "</div>";
     }
 
@@ -150,11 +152,19 @@ function showLabels(labels) {
 function toggleBox(id) {
     if (document.getElementById(id).style.display === "none") {
         //enable it
-        document.getElementById(id).removeAttribute("style");
+        enableBox(id);
     } else {
         //disable it
-        document.getElementById(id).style.display = "none";
+        disableBox(id);
     }
+}
+
+function enableBox(id) {
+    document.getElementById(id).removeAttribute("style");
+}
+
+function disableBox(id) {
+    document.getElementById(id).style.display = "none";
 }
 
 function inputKeyPress(event) {
@@ -162,6 +172,21 @@ function inputKeyPress(event) {
     if (event.key === "Enter") {
         loadData();
     }
+}
+
+//when an extra summary info is clicked, bring the user down to the custom summary
+function extraSummaryClick(labelName) {
+    //open up custom summary if it is not opened
+    enableBox("customSummaryContainer");
+
+    //blank it out first to make sure the page gets scrolled down
+    window.location.hash = "";
+    //move to that section
+    window.location.hash = "customLabel";
+
+    //for hit and miss
+    selectCustomSummaryLabel(labelName + " Hit");
+    selectCustomSummaryLabel(labelName + " Miss");
 }
 
 //for the custom summary searching functionality
@@ -190,34 +215,52 @@ function customSearchKeyUp(event) {
     showLabels(searchedLabels);
 }
 
+//calls the other label clicked function
+//takes just an index instead of the label itself
+function labelClickedByIndex(index) {
+    labelClicked(searchLabels[index]);
+}
+
 //for the labels in the custom summary view
 //allows the user to view the raw data, but only the ones they select
-function labelClicked(index) {
+function labelClicked(label) {
     if (currentRobotNumber === null) {
         //no robot yet
         return;
     }
 
-    if (document.getElementById(searchLabels[index]).style.backgroundColor === "black") {
-        //it is already selected, deselect it
-        document.getElementById(searchLabels[index]).style.backgroundColor = "white";
-        document.getElementById(searchLabels[index]).style.color = "black";
-
-        //remove this from the custom data view
-        let customDataIndex = getLabelIndex(searchLabels[index]);
-
-        openCustomDataLabels.splice(customDataIndex, 1);
-        openCustomDataPoints.splice(customDataIndex, 1);
-
-        //update the view
-        showCustomSummary();
+    if (document.getElementById(label).style.backgroundColor === "black") {
+        deselectCustomSummaryLabel(label);
     } else {
-        document.getElementById(searchLabels[index]).style.backgroundColor = "black";
-        document.getElementById(searchLabels[index]).style.color = "white";
-
-        //get the data for this label
-        electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, searchLabels[index]);
+        selectCustomSummaryLabel(label);
     }
+}
+
+//deselcts the label in the custom summary
+//thois is used when searching through the raw data
+function deselectCustomSummaryLabel(label) {
+    //it is already selected, deselect it
+    document.getElementById(label).style.backgroundColor = "white";
+    document.getElementById(label).style.color = "black";
+
+    //remove this from the custom data view
+    let customDataIndex = getLabelIndex(label);
+
+    openCustomDataLabels.splice(customDataIndex, 1);
+    openCustomDataPoints.splice(customDataIndex, 1);
+
+    //update the view
+    showCustomSummary();
+}
+
+//deselcts the label in the custom summary
+//thois is used when searching through the raw data
+function selectCustomSummaryLabel(label) {
+    document.getElementById(label).style.backgroundColor = "black";
+    document.getElementById(label).style.color = "white";
+
+    //get the data for this label
+    electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, label);
 }
 
 function getLabelIndex(labels, search) {

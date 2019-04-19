@@ -322,7 +322,9 @@ function getComplexActionSummary(currentRobotNumber, labels, robots, searchTerm)
     for (let i = 0; i < extras.length; i++ ) {
         let extraSearchTerm = searchTerm.replace("Full", extras[i]);
 
+        extraSummary += "<span class='clickable' onclick=\"extraSummaryClick('" + extraSearchTerm + "')\" >";
         extraSummary += getActionSummary(currentRobotNumber, labels, robots, extraSearchTerm);
+        extraSummary += "</span>";
     }
 
     let fullSummary = "";
