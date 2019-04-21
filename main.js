@@ -55,7 +55,6 @@ function loadData() {
                 //parse through the data
                 if (labels === null) {
                     labels = data.split("\n")[0].split(",");
-                    global.labels = labels;
                 }
 
                 let robot = new Robot();
@@ -105,9 +104,6 @@ function loadData() {
                 robots.push(robot);
             });
         }
-
-        //send this variable over to the client side
-        global.robots = robots;
     });
 
 }
@@ -153,6 +149,9 @@ ipcMain.on('getLastUpdated', function (event, args) {
 
 ipcMain.on('getLabels', function (event, args) {
     event.sender.send("showLabels", labels);
+
+    console.log("as")
+    summarizer.generateStats(labels, robots);
 });
 
 //gets data under a specific label
