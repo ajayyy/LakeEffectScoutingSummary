@@ -507,7 +507,7 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
     //string of what match numbers this max happened in
     let matchNumbersOfMaximums = "";
     for (let i = 0; i < hitMaxItems.length; i++) {
-        matchNumbersOfMaximums += robots[matchNumColumn].data[hitMaxItems[i][1]][matchNumColumn];
+        matchNumbersOfMaximums += robots[matchNumColumn].data[hitMaxItems[i][1] + 1][matchNumColumn];
 
         if (i != hitMaxItems.length - 1) {
             //if it is not the last index
