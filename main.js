@@ -150,8 +150,7 @@ ipcMain.on('getLastUpdated', function (event, args) {
 ipcMain.on('getLabels', function (event, args) {
     event.sender.send("showLabels", labels);
 
-    console.log("as")
-    summarizer.generateStats(labels, robots);
+    summarizer.generateAllStats(labels, robots);
 });
 
 //gets data under a specific label
