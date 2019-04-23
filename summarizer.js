@@ -49,9 +49,13 @@ for (let i = 0; i < actionSummaryLabels.length; i++) {
 
 //ordered list of every robot number
 //this will contain a sorted list for each stat
-var sortedRobotsByStat = [];
+var averageSortedRobotsByStat = [];
 //same list but for extra data
-var extraSortedRobotsByStat = [];
+var extraAverageSortedRobotsByStat = [];
+//for maximums
+var maxSortedRobotsByStat = [];
+//same list but for extra data
+var extraMaxSortedRobotsByStat = [];
 
 function getOverallData(currentRobotNumber, labels, robots) {
     let fullSummary = "";
@@ -227,21 +231,26 @@ function getDataForLabel(currentRobotNumber, labels, robots, searchTerm) {
 
 //calls the generateStats for normal data and extra data
 function generateAllStats(labels, robots) {
-    generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat);
+    generateStats(labels, robots, actionSummaryLabels, averageSortedRobotsByStat, true);
+    generateStats(labels, robots, actionSummaryLabels, maxSortedRobotsByStat, false);
 
     //each section of extra data is another array inside the main array
     for (let i = 0; i < extraActionSummaryLabels.length; i++) {
-        let sortedRobots = [];
-        generateStats(labels, robots, extraActionSummaryLabels[i], sortedRobots);
+        let averageSortedRobots = [];
+        let maxSortedRobots = [];
 
-        extraSortedRobotsByStat.push(sortedRobots);
+        generateStats(labels, robots, extraActionSummaryLabels[i], averageSortedRobots, true);
+        generateStats(labels, robots, extraActionSummaryLabels[i], maxSortedRobots, false);
+
+        extraAverageSortedRobotsByStat.push(averageSortedRobots);
+        extraMaxSortedRobotsByStat.push(maxSortedRobots);
     }
 }
 
 //will generate the placement statistics for each robot
 //Ex. sorted list of top hatch robots, sorted list of top cargo bots
-//by average
-function generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat) {
+//sortByAverage: true if sorting by average, false if sorting by max
+function generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat, sortByAverage) {
     //the list of statistics to look at
     let statistics = [];
     for (let i = 0; i < actionSummaryLabels.length; i++) {
@@ -266,7 +275,13 @@ function generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat) 
                         dataPoints.push(robotsLeft[robotNumber].data[dataPoint][columnIndex]);
                     }
                 }
-                let performance = getAverageItem(dataPoints);
+                let performance = 0;
+                if (sortByAverage) {
+                    performance = getAverageItem(dataPoints);
+                } else {
+                    //sort by max otherwise
+                    performance = getMaxItems(dataPoints)[0][0];
+                }
                 let robotIndex = robots.indexOf(robotsLeft[robotNumber]);
 
                 //if it's more, set it to be this robot
@@ -424,7 +439,7 @@ function getColumnItems(currentRobotNumber, labels, robots, searchTerm) {
 function getComplexActionSummary(currentRobotNumber, labels, robots, searchTermIndex) {
     let searchTerm = actionSummaryLabels[searchTermIndex];
 
-    let mainSummary = getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, sortedRobotsByStat, searchTermIndex);
+    let mainSummary = getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, averageSortedRobotsByStat, maxSortedRobotsByStat, searchTermIndex);
 
     //load the more detailed summary, and put it in a hidden box
     let extraSummary = "";
@@ -434,7 +449,7 @@ function getComplexActionSummary(currentRobotNumber, labels, robots, searchTermI
         let extraSearchTerm = extraActionSummaryLabels[searchTermIndex][i];
 
         extraSummary += "<span class='clickable' onclick=\"extraSummaryClick('" + extraSearchTerm + "')\" >";
-        extraSummary += getActionSummary(currentRobotNumber, labels, robots, extraActionSummaryLabels[searchTermIndex], extraSortedRobotsByStat[searchTermIndex], i);
+        extraSummary += getActionSummary(currentRobotNumber, labels, robots, extraActionSummaryLabels[searchTermIndex], extraAverageSortedRobotsByStat[searchTermIndex], extraMaxSortedRobotsByStat[searchTermIndex], i);
         extraSummary += "</span>";
     }
 
@@ -455,7 +470,7 @@ function getComplexActionSummary(currentRobotNumber, labels, robots, searchTermI
 
 //returns a summary message for this action
 //used to batch find the different action's stats
-function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, sortedRobotsByStat, searchTermIndex) {
+function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, averageSortedRobotsByStat, maxSortedRobotsByStat, searchTermIndex) {
     let searchTerm = actionSummaryLabels[searchTermIndex];
 
     let fullSummary = "";
@@ -486,9 +501,9 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
 
     fullSummary += searchTerm + " Average " + hitAverage.toFixed(2) + " : " + missAverage.toFixed(2);
 
-    //add on if they are top in something
-    let standing = getPositionInSortedList(robots, sortedRobotsByStat, currentRobotNumber, searchTermIndex);
-    fullSummary += " | Top " + standing + "<br/>";
+    //add on if they are top for average
+    let averageStanding = getPositionInSortedList(robots, averageSortedRobotsByStat, currentRobotNumber, searchTermIndex);
+    fullSummary += " | Top " + averageStanding + "<br/>";
 
     //find max
     let hitMaxItems = getMaxItems(hitItems);
@@ -521,7 +536,11 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
         matchNumbersOfMaximums = "N/A";
     }
 
-    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + " in match " + matchNumbersOfMaximums + "<br/>";
+    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + " in match " + matchNumbersOfMaximums;
+
+    //add on if they are top for max
+    let maxStanding = getPositionInSortedList(robots, maxSortedRobotsByStat, currentRobotNumber, searchTermIndex);
+    fullSummary += " | Top " + maxStanding + "<br/>";
 
     //return resulted summary
     return fullSummary;
