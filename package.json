@@ -5,12 +5,14 @@
   "main": "main.js",
   "scripts": {
     "test": "test",
-    "start": "electron ."
+    "start": "electron .",
+    "server": "npm run server.js"
   },
   "author": "Ajay Ramachandran",
   "license": "MIT",
   "dependencies": {
     "electron": "^4.1.0",
+    "express": "^4.16.4",
     "jslint": "^0.12.1"
   }
 }

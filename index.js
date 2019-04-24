@@ -1,6 +1,12 @@
 /*jshint esversion: 6 */
 
-var electron = require("electron");
+var serverBased = false;
+
+try {
+    var electron = require("electron");
+} catch(err) {
+    serverBased = true;
+}
 
 var labels = [];
 //the labels shown from this search
@@ -19,7 +25,11 @@ function init() {
     disableBox("customSummaryContainer");
 
     //get the labels
-    electron.ipcRenderer.send("getLabels");
+    if (serverBased) {
+        httpGetAsync("getLabels", prepareLabelsJson);
+    } else {
+        electron.ipcRenderer.send("getLabels");
+    }
 }
 
 function loadData() {
@@ -33,11 +43,19 @@ function loadData() {
     document.getElementById("commentsSummary").innerHTML = "Loading...";
 
     //start the processing
-    electron.ipcRenderer.send("createOverallSummary", currentRobotNumber);
-    electron.ipcRenderer.send("createAutoSummary", currentRobotNumber);
-    electron.ipcRenderer.send("createPreMatchSummary", currentRobotNumber);
-    electron.ipcRenderer.send("createCommentsSummary", currentRobotNumber);
-    electron.ipcRenderer.send("getLastUpdated");
+    if (serverBased) {
+        httpGetAsync("/createOverallSummary?robotNumber=" + currentRobotNumber, showOverallSummary);
+        httpGetAsync("/createAutoSummary?robotNumber=" + currentRobotNumber, showAutoSummary);
+        httpGetAsync("/createPreMatchSummary?robotNumber=" + currentRobotNumber, showPreMatchSummary);
+        httpGetAsync("/createCommentsSummary?robotNumber=" + currentRobotNumber, showCommentsSummary);
+        httpGetAsync("getLastUpdated", showLastUpdatedJson);
+    } else {
+        electron.ipcRenderer.send("createOverallSummary", currentRobotNumber);
+        electron.ipcRenderer.send("createAutoSummary", currentRobotNumber);
+        electron.ipcRenderer.send("createPreMatchSummary", currentRobotNumber);
+        electron.ipcRenderer.send("createCommentsSummary", currentRobotNumber);
+        electron.ipcRenderer.send("getLastUpdated");
+    }
 
     //show robot photo
     document.getElementById("robot").src = "photos/" + currentRobotNumber + ".JPG";
@@ -46,27 +64,47 @@ function loadData() {
     reloadCustomSummary();
 }
 
-electron.ipcRenderer.on("showOverallSummary", function (event, result) {
+//all the callback methods
+function showOverallSummary(result) {
     document.getElementById("overallSummary").innerHTML = result;
-});
-
-electron.ipcRenderer.on("showAutoSummary", function (event, result) {
+}
+function showAutoSummary(result) {
     document.getElementById("autoSummary").innerHTML = result;
-});
-
-electron.ipcRenderer.on("showPreMatchSummary", function (event, result) {
+}
+function showPreMatchSummary(result) {
     document.getElementById("preMatchSummary").innerHTML = result;
-});
-
-electron.ipcRenderer.on("showCommentsSummary", function (event, result) {
+}
+function showCommentsSummary(result) {
     document.getElementById("commentsSummary").innerHTML = result;
-});
-
-electron.ipcRenderer.on("showLastUpdated", function (event, result) {
+}
+function showLastUpdatedJson(result) {
+    showLastUpdated(JSON.parse(result).lastUpdated);
+}
+function showLastUpdated(result) {
     document.getElementById("lastUpdated").innerHTML = "Last Updated Match " + result;
-});
+}
 
-electron.ipcRenderer.on("showLabels", function (event, result) {
+//calls other method with more requirements
+function showDataForLabelJson(jsonResult) {
+    let json = JSON.parse(jsonResult);
+
+    showDataForLabel(json.label, json.result);
+}
+
+function showDataForLabel(label, result) {
+    if (!openCustomDataLabels.includes(label) && !openCustomDataPoints.includes(result)) {
+        openCustomDataLabels.push(label);
+        openCustomDataPoints.push(result);
+    }
+
+    showCustomSummary();
+}
+
+function prepareLabelsJson(result) {
+    prepareLabels(JSON.parse(result));
+}
+
+function prepareLabels(result) {
     labels = Array.from(result);
 
     //remove unneeded labels
@@ -75,16 +113,37 @@ electron.ipcRenderer.on("showLabels", function (event, result) {
     labels.splice(labels.length - 2, 1);
 
     showLabels(labels);
-});
+}
 
-electron.ipcRenderer.on("showDataForLabel", function (event, label, result) {
-    if (!openCustomDataLabels.includes(label) && !openCustomDataPoints.includes(result)) {
-        openCustomDataLabels.push(label);
-        openCustomDataPoints.push(result);
-    }
+if (!serverBased) {
+    electron.ipcRenderer.on("showOverallSummary", function (event, result) {
+        showOverallSummary(result);
+    });
+    
+    electron.ipcRenderer.on("showAutoSummary", function (event, result) {
+        showAutoSummary(result);
+    });
+    
+    electron.ipcRenderer.on("showPreMatchSummary", function (event, result) {
+        showPreMatchSummary(result);
+    });
+    
+    electron.ipcRenderer.on("showCommentsSummary", function (event, result) {
+        showCommentsSummary(result);
+    });
+    
+    electron.ipcRenderer.on("showLastUpdated", function (event, result) {
+        showLastUpdated(result);
+    });
 
-    showCustomSummary();
-});
+    electron.ipcRenderer.on("showDataForLabel", function (event, label, result) {
+        showDataForLabel(label, result);
+    });
+
+    electron.ipcRenderer.on("showLabels", function (event, result) {
+        prepareLabels(result);
+    });
+}
 
 //go through the custom summary and get new data from the server
 function reloadCustomSummary() {
@@ -100,7 +159,11 @@ function reloadCustomSummary() {
 
     //call to get the new data
     for (let i = 0; i < customLabels.length; i++) {
-        electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, customLabels[i]);
+        if (serverBased) {
+            httpGetAsync("getDataForLabel?robotNumber=" + currentRobotNumber + "&searchTerm=" + customLabels[i], showDataForLabelJson);
+        } else {
+            electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, customLabels[i]);
+        }
     }
 }
 
@@ -120,11 +183,11 @@ function showCustomSummary() {
     if (openCustomDataPoints.length > 0) {
         for (let i = 0; i < openCustomDataPoints[0].length; i++) {
             summary += "<tr>";
-    
+
             for (let s = 0; s < openCustomDataPoints.length; s++) {
                 summary += "<td>" + openCustomDataPoints[s][i] + "</td>";
             }
-    
+
             summary += "</tr>";
         }
     }
@@ -203,7 +266,7 @@ function customSearchKeyUp(event) {
 
     //this will include all the labels that are part of this search
     let searchedLabels = [];
-    
+
     //search for the lables to add to searchedLabels
     for (let i = 0; i < labels.length; i++) {
         if (labels[i].toLowerCase().includes(searchTerm.toLowerCase())) {
@@ -260,7 +323,11 @@ function selectCustomSummaryLabel(label) {
     document.getElementById(label).style.color = "white";
 
     //get the data for this label
-    electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, label);
+    if (serverBased) {
+        httpGetAsync("getDataForLabel?robotNumber=" + currentRobotNumber + "&searchTerm=" + label, showDataForLabelJson);
+    } else {
+        electron.ipcRenderer.send("getDataForLabel", currentRobotNumber, label);
+    }
 }
 
 function getLabelIndex(labels, search) {
@@ -271,4 +338,15 @@ function getLabelIndex(labels, search) {
     }
 
     return -1;
+}
+
+function httpGetAsync(url, callback) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            callback(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
 }
