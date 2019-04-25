@@ -4,6 +4,8 @@ var serverBased = false;
 
 try {
     var electron = require("electron");
+    var fs = require("fs");
+    var http = require("http");
 } catch(err) {
     serverBased = true;
 }
@@ -28,6 +30,7 @@ function init() {
     if (serverBased) {
         httpGetAsync("getLabels", prepareLabelsJson);
     } else {
+        document.getElementById("downloadData").style.display = "inline";
         electron.ipcRenderer.send("getLabels");
     }
 }
@@ -62,6 +65,21 @@ function loadData() {
 
     //reload custom info
     reloadCustomSummary();
+}
+
+function downloadData() {
+    httpGetAsync("https://scout.ajay.app/getDataFiles", downloadDataResponse);
+}
+
+function downloadDataResponse(result) {
+    let files = JSON.parse(result);
+
+    for (let i = 0; i < files.length; i++) {
+        let file = fs.createWriteStream("./data/" + files[i]);
+        let request = http.get("http://scout.ajay.app/data/" + files[i], function(response) {
+            response.pipe(file);
+        });
+    }
 }
 
 //all the callback methods
