@@ -43,13 +43,35 @@ app.use('/photos', express.static(__dirname + '/photos'));
 app.post('/', function (req, res){
     var form = new formidable.IncomingForm();
 
-    form.parse(req);
+    let files = [];
+    let field;
 
-    form.on('fileBegin', function (name, file){
-        file.path = __dirname + '/data/' + file.name;
+    form.on('field', function(fieldName, value) {
+        if (fieldName == "password") {
+            field = value;
+        }
     });
 
-    return res.sendFile("index.html", { root: __dirname });
+    form.on('file', function(field, file) {
+        files.push(file);
+    });
+
+    form.on('end', function() {
+        for (let i = 0; i < files.length; i++) {
+            console.log(files[i].name + " " + files[i].name.endsWith(".csv"))
+            if (field == "2809cyber" && files[i].name.endsWith(".csv")) {
+                fs.copyFile(files[i].path, __dirname + '/data/' + files[i].name, function(err) {  
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        }
+
+        res.redirect('/');
+    });
+
+    form.parse(req);
 });
 
 //list that holds all the data for the robots
