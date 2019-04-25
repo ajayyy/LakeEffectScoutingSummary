@@ -7,6 +7,8 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 
+var formidable = require('formidable');
+
 //https://stackoverflow.com/a/14272874/1985387
 var options = {
   key: fs.readFileSync('./certificates/private.key'),
@@ -36,6 +38,19 @@ app.get('/index.js', function (req, res) {
 
 //publish photos
 app.use('/photos', express.static(__dirname + '/photos'));
+
+//data uploader
+app.post('/', function (req, res){
+    var form = new formidable.IncomingForm();
+
+    form.parse(req);
+
+    form.on('fileBegin', function (name, file){
+        file.path = __dirname + '/data/' + file.name;
+    });
+
+    return res.sendFile("index.html", { root: __dirname });
+});
 
 //list that holds all the data for the robots
 var robots = [];
