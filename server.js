@@ -62,6 +62,8 @@ app.get('/index.js', function (req, res) {
 
 //publish photos
 app.use('/photos', express.static(__dirname + '/photos'));
+//publish data
+app.use('/photos', express.static(__dirname + '/data'));
 
 //data uploader
 app.post('/data', function (req, res){
