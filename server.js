@@ -241,7 +241,7 @@ app.get('/getLabels', function (req, res) {
 
 //gets data under a specific label
 app.get('/getDataFiles', function (req, res) {
-    let files = fs.readdirSync(testFolder);
+    let files = fs.readdirSync("./data");
 
     res.send(files);
 });
