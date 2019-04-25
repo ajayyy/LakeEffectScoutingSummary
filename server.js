@@ -28,6 +28,22 @@ app.get('/', function (req, res) {
     return res.sendFile("index.html", { root: __dirname });
 });
 
+//upload page
+app.get('/upload', function (req, res) {
+    return res.sendFile("upload.html", { root: __dirname });
+});
+app.get('/u', function (req, res) {
+    return res.sendFile("upload.html", { root: __dirname });
+});
+
+//success and failed
+app.get('/success', function (req, res) {
+    return res.sendFile("success.html", { root: __dirname });
+});
+app.get('/failed', function (req, res) {
+    return res.sendFile("failed.html", { root: __dirname });
+});
+
 app.get('/styles.css', function (req, res) {
     return res.sendFile("styles.css", { root: __dirname });
 });
@@ -40,7 +56,7 @@ app.get('/index.js', function (req, res) {
 app.use('/photos', express.static(__dirname + '/photos'));
 
 //data uploader
-app.post('/', function (req, res){
+app.post('/upload', function (req, res){
     var form = new formidable.IncomingForm();
 
     let files = [];
@@ -57,18 +73,24 @@ app.post('/', function (req, res){
     });
 
     form.on('end', function() {
+        let success = false;
         for (let i = 0; i < files.length; i++) {
-            console.log(files[i].name + " " + files[i].name.endsWith(".csv"))
             if (field == "2809cyber" && files[i].name.endsWith(".csv")) {
                 fs.copyFile(files[i].path, __dirname + '/data/' + files[i].name, function(err) {  
                     if (err) {
                         console.error(err);
                     }
                 });
+
+                success = true;
             }
         }
 
-        res.redirect('/');
+        if (success) {
+            res.redirect("success");
+        } else {
+            res.redirect("failed");
+        }
     });
 
     form.parse(req);
