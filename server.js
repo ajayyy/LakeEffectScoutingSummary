@@ -233,14 +233,17 @@ app.get('/getLabels', function (req, res) {
     summarizer.generateAllStats(labels, robots);
 });
 
-//gets data under a specific label
-app.get('/getDataForLabel', function (req, res) {
-    let data = summarizer.getDataForLabel(req.query.robotNumber, labels, robots, req.query.searchTerm.toLowerCase());
+app.get('/getLabels', function (req, res) {
+    res.send(labels);
 
-    res.send({
-                label: req.query.searchTerm, 
-                result: data
-            });
+    summarizer.generateAllStats(labels, robots);
+});
+
+//gets data under a specific label
+app.get('/getDataFiles', function (req, res) {
+    let files = fs.readdirSync(testFolder);
+
+    res.send(files);
 });
 
 //Classes
