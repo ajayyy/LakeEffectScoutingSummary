@@ -251,7 +251,7 @@ app.get('/getDataForLabel', function (req, res) {
         label: req.query.searchTerm, 
         result: data
     });
-}
+});
 
 //gets what data files are available
 app.get('/getDataFiles', function (req, res) {
