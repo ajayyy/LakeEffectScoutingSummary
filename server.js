@@ -74,43 +74,48 @@ app.post('/photos', function (req, res){
 });
 
 function upload(req, res, fileType, folder) {
-    var form = new formidable.IncomingForm();
+    try {
+        var form = new formidable.IncomingForm();
 
-    let files = [];
-    let field;
-
-    form.on('field', function(fieldName, value) {
-        if (fieldName == "password") {
-            field = value;
-        }
-    });
-
-    form.on('file', function(field, file) {
-        files.push(file);
-    });
-
-    form.on('end', function() {
-        let success = false;
-        for (let i = 0; i < files.length; i++) {
-            if (field == "2809cyber" && files[i].name.endsWith(fileType)) {
-                fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
-                    if (err) {
-                        console.error(err);
-                    }
-                });
-
-                success = true;
+        let files = [];
+        let field;
+    
+        form.on('field', function(fieldName, value) {
+            if (fieldName == "password") {
+                field = value;
             }
-        }
-
-        if (success) {
-            res.redirect("success");
-        } else {
-            res.redirect("failed");
-        }
-    });
-
-    form.parse(req);
+        });
+    
+        form.on('file', function(field, file) {
+            files.push(file);
+        });
+    
+        form.on('end', function() {
+            let success = false;
+            for (let i = 0; i < files.length; i++) {
+                if (field == "2809cyber" && files[i].name.endsWith(fileType)) {
+                    fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+    
+                    success = true;
+                }
+            }
+    
+            if (success) {
+                res.redirect("success");
+            } else {
+                res.redirect("failed");
+            }
+        });
+    
+        form.parse(req);
+    } catch(err) {
+        console.log(err);
+        res.redirect("failed");
+    }
 }
 
 //list that holds all the data for the robots
