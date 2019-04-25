@@ -244,6 +244,15 @@ app.get('/getLabels', function (req, res) {
     summarizer.generateAllStats(labels, robots);
 });
 
+app.get('/getDataForLabel', function (req, res) {
+    let data = summarizer.getDataForLabel(req.query.robotNumber, labels, robots, req.query.searchTerm.toLowerCase());
+
+    res.send({
+        label: req.query.searchTerm, 
+        result: data
+    });
+}
+
 //gets what data files are available
 app.get('/getDataFiles', function (req, res) {
     let files = fs.readdirSync("./data");
