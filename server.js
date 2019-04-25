@@ -36,6 +36,14 @@ app.get('/u', function (req, res) {
     return res.sendFile("upload.html", { root: __dirname });
 });
 
+//multiview page
+app.get('/multiview', function (req, res) {
+    return res.sendFile("multiview.html", { root: __dirname });
+});
+app.get('/m', function (req, res) {
+    return res.sendFile("multiview.html", { root: __dirname });
+});
+
 //success and failed
 app.get('/success', function (req, res) {
     return res.sendFile("success.html", { root: __dirname });
@@ -56,7 +64,14 @@ app.get('/index.js', function (req, res) {
 app.use('/photos', express.static(__dirname + '/photos'));
 
 //data uploader
-app.post('/upload', function (req, res){
+app.post('/data', function (req, res){
+    upload(req, res, ".csv", "/data/");
+});
+app.post('/photos', function (req, res){
+    upload(req, res, ".JPG", "/photos/");
+});
+
+function upload(req, res, fileType, folder) {
     var form = new formidable.IncomingForm();
 
     let files = [];
@@ -75,8 +90,8 @@ app.post('/upload', function (req, res){
     form.on('end', function() {
         let success = false;
         for (let i = 0; i < files.length; i++) {
-            if (field == "2809cyber" && files[i].name.endsWith(".csv")) {
-                fs.copyFile(files[i].path, __dirname + '/data/' + files[i].name, function(err) {  
+            if (field == "2809cyber" && files[i].name.endsWith(fileType)) {
+                fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
                     if (err) {
                         console.error(err);
                     }
@@ -94,7 +109,7 @@ app.post('/upload', function (req, res){
     });
 
     form.parse(req);
-});
+}
 
 //list that holds all the data for the robots
 var robots = [];
