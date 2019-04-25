@@ -239,9 +239,15 @@ app.get('/getLabels', function (req, res) {
     summarizer.generateAllStats(labels, robots);
 });
 
-//gets data under a specific label
+//gets what data files are available
 app.get('/getDataFiles', function (req, res) {
     let files = fs.readdirSync("./data");
+
+    res.send(files);
+});
+//gets what photos are available
+app.get('/getPhotoFiles', function (req, res) {
+    let files = fs.readdirSync("./photos");
 
     res.send(files);
 });
