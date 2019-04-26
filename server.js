@@ -98,6 +98,11 @@ function upload(req, res, fileType, folder) {
                         if (err) {
                             console.error(err);
                         }
+
+                        if (folder == "/data/") {
+                            //then reload the data
+                            loadData();
+                        }
                     });
     
                     success = true;
@@ -135,6 +140,9 @@ String.prototype.replaceAll = function(search, replace) {
 }
 
 function loadData() {
+    labels = null;
+    data = [];
+
     fs.readdir('./data', function (err, items) {
         if (err) throw err;
 
