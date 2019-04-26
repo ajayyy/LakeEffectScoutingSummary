@@ -76,6 +76,7 @@ app.post('/photos', function (req, res){
 function upload(req, res, fileType, folder) {
     try {
         var form = new formidable.IncomingForm();
+        form.maxFileSize = 100 * 1024 * 1024 * 1024;
 
         let files = [];
         let field;
