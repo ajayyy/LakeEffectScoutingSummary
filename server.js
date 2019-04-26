@@ -147,7 +147,7 @@ String.prototype.replaceAll = function(search, replace) {
 
 function loadData() {
     labels = null;
-    data = [];
+    robots = [];
 
     fs.readdir('./data', function (err, items) {
         if (err) throw err;
