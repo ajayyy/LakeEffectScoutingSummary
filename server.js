@@ -95,18 +95,23 @@ function upload(req, res, fileType, folder) {
             let success = false;
             for (let i = 0; i < files.length; i++) {
                 if (field == "2809cyber" && files[i].name.endsWith(fileType)) {
-                    fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
-                        if (err) {
-                            console.error(err);
-                        }
+                    try {
+                        fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
+                            if (err) {
+                                console.error(err);
+                            }
 
-                        if (folder == "/data/") {
-                            //then reload the data
-                            loadData();
-                        }
-                    });
+                            if (folder == "/data/") {
+                                //then reload the data
+                                loadData();
+                            }
+                        });
     
-                    success = true;
+                        success = true;
+                    } catch (err) {
+                        console.log(err);
+                        success = false;
+                    }
                 }
             }
     
