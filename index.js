@@ -39,6 +39,8 @@ function loadData() {
     //show a quick summary of all the data for this robot
     currentRobotNumber = document.getElementById("robotNumber").value;
 
+    document.title = currentRobotNumber + " - Scouting Reader";
+
     //set loading indicators
     document.getElementById("overallSummary").innerHTML = "Loading...";
     document.getElementById("autoSummary").innerHTML = "Loading...";
