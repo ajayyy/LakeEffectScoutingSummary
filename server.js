@@ -155,7 +155,10 @@ function loadData() {
         //iterate through all files
         for (let i = 0; i < items.length; i++) {
             fs.readFile('./data/' + items[i], "utf8", function (error, data) {
-                if (error) throw error;
+                if (error) {
+                    console.log(error);
+                    return;
+                }
                 if (data === "") {
                     //file is empty
                     return;
