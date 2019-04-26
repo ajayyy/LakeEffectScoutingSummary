@@ -101,9 +101,9 @@ function upload(req, res, fileType, folder) {
                                 console.error(err);
                             }
 
-                            if (folder == "/data/") {
+                            if (folder == "/data/" && i == files.length - 1) {
                                 //then reload the data
-                                loadData();
+                                setTimeout(loadData, 3000);
                             }
                         });
     
