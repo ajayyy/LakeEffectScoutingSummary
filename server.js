@@ -63,7 +63,7 @@ app.get('/index.js', function (req, res) {
 //publish photos
 app.use('/photos', express.static(__dirname + '/photos'));
 //publish data
-app.use('/data', express.static(__dirname + '/data'));
+// app.use('/data', express.static(__dirname + '/data'));
 
 //data uploader
 app.post('/data', function (req, res){
@@ -241,7 +241,8 @@ app.get('/createPreMatchSummary', function (req, res) {
     res.send(result);
 });
 app.get('/createCommentsSummary', function (req, res) {
-    let result = summarizer.getCommentsSummary(req.query.robotNumber, labels, robots);
+    // let result = summarizer.getCommentsSummary(req.query.robotNumber, labels, robots);\
+    let result = "Redacted";
 
     res.send(result);
 });
