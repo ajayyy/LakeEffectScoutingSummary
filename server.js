@@ -15,6 +15,8 @@ var options = {
   cert: fs.readFileSync('./certificates/certificate.crt')
 };
 
+var loadedPassword = fs.readFileSync('./certificates/password.txt');
+
 // Create a service (the app object is just a callback).
 var app = express();
 
@@ -94,7 +96,7 @@ function upload(req, res, fileType, folder) {
         form.on('end', function() {
             let success = false;
             for (let i = 0; i < files.length; i++) {
-                if (field == "2809cyber" && files[i].name.endsWith(fileType)) {
+                if (field == loadedPassword && files[i].name.endsWith(fileType)) {
                     try {
                         fs.copyFile(files[i].path, __dirname + folder + files[i].name, function(err) {  
                             if (err) {
