@@ -1,0 +1,29 @@
+<head>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+</head>
+    
+<body>
+
+    <span style="float: right;">
+        Upload Scouting Data:
+
+        <form action="/data" enctype="multipart/form-data" method="post" style="display: inline;">
+            <input type="file" name="upload" multiple/>
+            <input type="submit" value="Upload"/>
+            Password:
+            <input type="password" name="password"/>
+        </form>
+
+        <br/>
+
+        Upload Robot Photos (ends in JPG):
+
+        <form action="/photos" enctype="multipart/form-data" method="post" style="display: inline;">
+            <input type="file" name="upload" multiple/>
+            <input type="submit" value="Upload"/>
+            Password:
+            <input type="password" name="password"/>
+        </form>
+    </span>
+
+</body>
