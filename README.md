@@ -6,6 +6,12 @@ Has an electron app local version and a server-based remote version.
 
 The server-based version supports file uploading, photo uploading and `https`. They both run off the same codebase, meaning updates will work on both versions.
 
+# Try It Live!
+
+There is a version currently available on https://scout.ajay.app. To view it in action, check out https://scout.ajay.app/#188, which will show data for team 188. This has data for teams in the Archimedes field at Detroit 2019 Worlds.
+
+![image](https://user-images.githubusercontent.com/12688112/65810419-3ef3c900-e178-11e9-9f65-2b0263631599.png)
+
 # Instructions
 
 Put scouting data in a folder called data (in the root directory of the program).
