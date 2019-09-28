@@ -29,6 +29,14 @@ function init() {
     //get the labels
     if (serverBased) {
         httpGetAsync("getLabels", prepareLabelsJson);
+
+        //see if a sample team number was specified in the url
+        teamNumber = window.location.hash.replace("#", "");
+		if (teamNumber !== "" && !isNaN(parseInt(teamNumber))) {
+			document.getElementById("robotNumber").value = teamNumber;
+			
+			loadData();
+		}
     } else {
         document.getElementById("downloadData").style.display = "inline";
         electron.ipcRenderer.send("getLabels");
