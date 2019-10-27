@@ -8,7 +8,7 @@ The server-based version supports file uploading, photo uploading and `https`. T
 
 # Try It Live!
 
-There is a version currently available on https://scoutp.ajay.app. To view it in action, check out https://scoutp.ajay.app/#188, which will show data for team 188. This has data for teams in the Archimedes field at Detroit 2019 Worlds.
+There is a version currently available on https://scout.ajay.app. To view it in action, check out https://scout.ajay.app/#188, which will show data for team 188. This has data for teams in the Archimedes field at Detroit 2019 Worlds.
 
 ![image](https://user-images.githubusercontent.com/12688112/65810419-3ef3c900-e178-11e9-9f65-2b0263631599.png)
 
