@@ -101,14 +101,11 @@ function getOverallData(currentRobotNumber, labels, robots) {
     fullSummary += "<br/>";
 
     let edgeClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "edge");
-    fullSummary += "Edge Climb Rate: " + getRateOfItems(edgeClimbRateItems) + " | " + getParsedAverageItem(edgeClimbRateItems) + "%";
-    fullSummary += "<br/>";
     let middleClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "middle");
-    fullSummary += "Middle Climb Rate: " + getRateOfItems(middleClimbRateItems) + " | " + getParsedAverageItem(middleClimbRateItems) + "%";
-    fullSummary += "<br/>";
     let centerClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "center");
-    fullSummary += "Center Climb Rate: " + getRateOfItems(centerClimbRateItems) + " | " + getParsedAverageItem(centerClimbRateItems) + "%";
-    fullSummary += "<br/>";
+
+    fullSummary += "Edge : Middle : Center Climb Rate: " + getRawRateOfItems(edgeClimbRateItems) + " : " + getRawRateOfItems(middleClimbRateItems) 
+        + " : " + getRawRateOfItems(centerClimbRateItems);
 
     fullSummary += "<br/>";
 
@@ -651,8 +648,13 @@ function getParsedAverageItem(items) {
     return (getAverageItem(items) * 100).toFixed(2);
 }
 
-//gets how many times 1 is in items
+//gets how many times 1 is in items in a formatted string
 function getRateOfItems(items) {
+    return getRawRateOfItems(items) + "/" + items.length;
+}
+
+//gets how many times 1 is in items
+function getRawRateOfItems(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
         if (items[i] === "1" || items[i] >= 1) {
@@ -660,8 +662,7 @@ function getRateOfItems(items) {
         }
     }
 
-    //convert sum to average
-    return sum + "/" + items.length;
+    return sum;
 }
 
 //gets how many times 1 is in items in a percentage
