@@ -158,28 +158,7 @@ function getAutoSummary(currentRobotNumber, labels, robots) {
 }
 
 function getPreMatchSummary(currentRobotNumber, labels, robots) {
-    return  ""
     let fullSummary = "";
-
-    //show if they start with cargo or hatch
-    let startingWithCargoRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects cargo");
-    fullSummary += "Starting With Cargo: " + getRateOfItems(startingWithCargoRateItems) + " | " + getParsedAverageItem(startingWithCargoRateItems) + "%";
-    fullSummary += "<br/>";
-    let startingWithHatchRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects hatch");
-    fullSummary += "Starting With Hatch: " + getRateOfItems(startingWithHatchRateItems) + " | " + getParsedAverageItem(startingWithHatchRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
-
-    //starting platform
-    let level1StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 1 (hab)");
-    fullSummary += "Starting On Level 1 (HAB): " + getRateOfItems(level1StartRateItems) + " | " + getParsedAverageItem(level1StartRateItems) + "%";
-    fullSummary += "<br/>";
-    let level2StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 2");
-    fullSummary += "Starting On Level 2: " + getRateOfItems(level2StartRateItems) + " | " + getParsedAverageItem(level2StartRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
 
     //starting position
     let rightStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "right");
@@ -598,10 +577,10 @@ function getMinItems(items) {
 function getAverageItem(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        if (items[i].toLowerCase() === "true") {
-            sum += 1;
-        } else if (items[i].toLowerCase() !== "false") {
+        if (typeof(items[i]) !== "string") {
             sum += parseFloat(items[i]);
+        } else if (items[i].toLowerCase() === "true") {
+            sum += 1;
         }
     }
 
