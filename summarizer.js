@@ -60,11 +60,11 @@ var extraMaxSortedRobotsByStat = [];
 function getOverallData(currentRobotNumber, labels, robots) {
     let fullSummary = "";
 
-    for (let i = 0; i < actionSummaryLabels.length; i++) {
-        fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, i);
+    // for (let i = 0; i < actionSummaryLabels.length; i++) {
+    //     fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, i);
 
-        fullSummary += "<br/>";
-    }
+    //     fullSummary += "<br/>";
+    // }
 
     let deathRateItems = getColumnItems(currentRobotNumber, labels, robots, "died");
     fullSummary += "Death Rate: " + getRateOfItems(deathRateItems) + " | " + getParsedAverageItem(deathRateItems) + "%";
@@ -78,21 +78,21 @@ function getOverallData(currentRobotNumber, labels, robots) {
 
     fullSummary += "<br/>";
 
-    let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
-    fullSummary += "Level 2 Successful Climb Rate: " + getRateOfItems(level2ClimbSuccessRateItems) + " | " + getParsedAverageItem(level2ClimbSuccessRateItems) + "%";
-    fullSummary += "<br/>";
-    let level2ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb");
-    fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
-    fullSummary += "<br/>";
+    // let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
+    // fullSummary += "Level 2 Successful Climb Rate: " + getRateOfItems(level2ClimbSuccessRateItems) + " | " + getParsedAverageItem(level2ClimbSuccessRateItems) + "%";
+    // fullSummary += "<br/>";
+    // let level2ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb");
+    // fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
+    // fullSummary += "<br/>";
 
-    fullSummary += "<br/>";
+    // fullSummary += "<br/>";
 
-    let level3ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed");
-    fullSummary += "Level 3 Successful Climb Rate: " + getRateOfItems(level3ClimbSuccessRateItems) + " | " + getParsedAverageItem(level3ClimbSuccessRateItems) + "%";
-    fullSummary += "<br/>";
-    let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
-    fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
-    fullSummary += "<br/>";
+    // let level3ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed");
+    // fullSummary += "Level 3 Successful Climb Rate: " + getRateOfItems(level3ClimbSuccessRateItems) + " | " + getParsedAverageItem(level3ClimbSuccessRateItems) + "%";
+    // fullSummary += "<br/>";
+    // let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
+    // fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
+    // fullSummary += "<br/>";
 
     fullSummary += "<br/>";
 
@@ -109,9 +109,9 @@ function getOverallData(currentRobotNumber, labels, robots) {
 function getAutoSummary(currentRobotNumber, labels, robots) {
     //find all the auto collumns
     var autoColumns = [];
-    //start at index 5 to avoid auto start position
-    for (let i = 5; i < labels.length; i++) {
-        if (labels[i].toLowerCase().includes("auto") && !labels[i].toLowerCase().includes("full")) {
+    //start at index 4 to avoid auto start position
+    for (let i = 4; i < labels.length; i++) {
+        if (labels[i].toLowerCase().includes("auto")) {
             autoColumns.push(i);
         }
     }
@@ -158,6 +158,7 @@ function getAutoSummary(currentRobotNumber, labels, robots) {
 }
 
 function getPreMatchSummary(currentRobotNumber, labels, robots) {
+    return  ""
     let fullSummary = "";
 
     //show if they start with cargo or hatch
@@ -231,6 +232,7 @@ function getDataForLabel(currentRobotNumber, labels, robots, searchTerm) {
 
 //calls the generateStats for normal data and extra data
 function generateAllStats(labels, robots) {
+    return
     generateStats(labels, robots, actionSummaryLabels, averageSortedRobotsByStat, true);
     generateStats(labels, robots, actionSummaryLabels, maxSortedRobotsByStat, false);
 
@@ -596,7 +598,11 @@ function getMinItems(items) {
 function getAverageItem(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        sum += parseFloat(items[i]);
+        if (items[i].toLowerCase() === "true") {
+            sum += 1;
+        } else if (items[i].toLowerCase() !== "false") {
+            sum += parseFloat(items[i]);
+        }
     }
 
     //convert sum to average
