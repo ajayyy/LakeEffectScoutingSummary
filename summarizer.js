@@ -18,10 +18,10 @@ const rocketCargoExtras = ['Level 1', 'Level 2', 'Level 3'];
 
 //what labels have a complex action summary
 var actionSummaryLabels = [];
-actionSummaryLabels.push("TeleOp Full Rocket Cargo");
-actionSummaryLabels.push("TeleOp Full Cargo Ship Cargo");
-actionSummaryLabels.push("TeleOp Full Rocket Hatch");
-actionSummaryLabels.push("TeleOp Full Cargo Ship Hatch");
+actionSummaryLabels.push("TeleOp Outer Shots");
+actionSummaryLabels.push("TeleOp Inner Shots");
+actionSummaryLabels.push("TeleOp Low Shots");
+actionSummaryLabels.push("TeleOp Missed Shots");
 
 //pre generate all of the extra action labels
 var extraActionSummaryLabels = [];
@@ -60,11 +60,11 @@ var extraMaxSortedRobotsByStat = [];
 function getOverallData(currentRobotNumber, labels, robots) {
     let fullSummary = "";
 
-    // for (let i = 0; i < actionSummaryLabels.length; i++) {
-    //     fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, i);
+    for (let i = 0; i < actionSummaryLabels.length; i++) {
+        fullSummary += getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, averageSortedRobotsByStat, maxSortedRobotsByStat, i);
 
-    //     fullSummary += "<br/>";
-    // }
+        fullSummary += "<br/>";
+    }
 
     let deathRateItems = getColumnItems(currentRobotNumber, labels, robots, "died");
     fullSummary += "Death Rate: " + getRateOfItems(deathRateItems) + " | " + getParsedAverageItem(deathRateItems) + "%";
@@ -74,8 +74,6 @@ function getOverallData(currentRobotNumber, labels, robots) {
     fullSummary += "<br/>";
     let tippedRateItems = getColumnItems(currentRobotNumber, labels, robots, "tipped");
     fullSummary += "Tipped Rate: " + getRateOfItems(tippedRateItems) + " | " + getParsedAverageItem(tippedRateItems) + "%";
-    fullSummary += "<br/>";
-
     fullSummary += "<br/>";
 
     // let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
@@ -211,21 +209,20 @@ function getDataForLabel(currentRobotNumber, labels, robots, searchTerm) {
 
 //calls the generateStats for normal data and extra data
 function generateAllStats(labels, robots) {
-    return
     generateStats(labels, robots, actionSummaryLabels, averageSortedRobotsByStat, true);
     generateStats(labels, robots, actionSummaryLabels, maxSortedRobotsByStat, false);
 
-    //each section of extra data is another array inside the main array
-    for (let i = 0; i < extraActionSummaryLabels.length; i++) {
-        let averageSortedRobots = [];
-        let maxSortedRobots = [];
+    // //each section of extra data is another array inside the main array
+    // for (let i = 0; i < extraActionSummaryLabels.length; i++) {
+    //     let averageSortedRobots = [];
+    //     let maxSortedRobots = [];
 
-        generateStats(labels, robots, extraActionSummaryLabels[i], averageSortedRobots, true);
-        generateStats(labels, robots, extraActionSummaryLabels[i], maxSortedRobots, false);
+    //     generateStats(labels, robots, extraActionSummaryLabels[i], averageSortedRobots, true);
+    //     generateStats(labels, robots, extraActionSummaryLabels[i], maxSortedRobots, false);
 
-        extraAverageSortedRobotsByStat.push(averageSortedRobots);
-        extraMaxSortedRobotsByStat.push(maxSortedRobots);
-    }
+    //     extraAverageSortedRobotsByStat.push(averageSortedRobots);
+    //     extraMaxSortedRobotsByStat.push(maxSortedRobots);
+    // }
 }
 
 //will generate the placement statistics for each robot
@@ -235,7 +232,7 @@ function generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat, 
     //the list of statistics to look at
     let statistics = [];
     for (let i = 0; i < actionSummaryLabels.length; i++) {
-        statistics.push(actionSummaryLabels[i] + " Hit");
+        statistics.push(actionSummaryLabels[i]);
     }
 
     for (let i = 0; i < statistics.length; i++) {
@@ -457,12 +454,10 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
     let fullSummary = "";
 
     //miss and hit to include the successes and failures
-    let hitIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " hit");
-    let missIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " miss");
+    let hitIndex = getColumnIndex(labels, searchTerm.toLowerCase());
 
     //all the data points for this robot
     let hitItems = [];
-    let missItems = [];
     for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
         if (robots[currentRobot].robotNumber === currentRobotNumber) {
             //all the matches for this robot
@@ -471,16 +466,14 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
                     hitItems.push(robots[currentRobot].data[matchNum][hitIndex]);
-                    missItems.push(robots[currentRobot].data[matchNum][missIndex]);
                 }
             }
         }
     }
     //find average
     let hitAverage = getAverageItem(hitItems);
-    let missAverage = getAverageItem(missItems);
 
-    fullSummary += searchTerm + " Average " + hitAverage.toFixed(2) + " : " + missAverage.toFixed(2);
+    fullSummary += searchTerm + " Average " + hitAverage.toFixed(2);
 
     //add on if they are top for average
     let averageStanding = getPositionInSortedList(robots, averageSortedRobotsByStat, currentRobotNumber, searchTermIndex);
@@ -488,14 +481,6 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
 
     //find max
     let hitMaxItems = getMaxItems(hitItems);
-
-    //the miss amount in ONLY the matches where the maximum amount of items were places
-    let maxMissItems = [];
-    for (let i = 0; i < hitMaxItems.length; i++) {
-        maxMissItems.push(missItems[hitMaxItems[i][1]]);
-    }
-    //it will find the minimum misses in the matches where they scored the most (the best performance)
-    let missMinItems = getMinItems(maxMissItems);
 
     //get match number index to show what match this happened in
     let matchNumColumn = getColumnIndex(labels, "match");
@@ -517,7 +502,7 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
         matchNumbersOfMaximums = "N/A";
     }
 
-    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + " in match " + matchNumbersOfMaximums;
+    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " in match " + matchNumbersOfMaximums;
 
     //add on if they are top for max
     let maxStanding = getPositionInSortedList(robots, maxSortedRobotsByStat, currentRobotNumber, searchTermIndex);
@@ -577,7 +562,7 @@ function getMinItems(items) {
 function getAverageItem(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        if (typeof(items[i]) !== "string") {
+        if (!isNaN(items[i])) {
             sum += parseFloat(items[i]);
         } else if (items[i].toLowerCase() === "true") {
             sum += 1;
