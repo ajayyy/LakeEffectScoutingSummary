@@ -83,14 +83,40 @@ function getOverallData(currentRobotNumber, labels, robots) {
     // fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
     // fullSummary += "<br/>";
 
-    // fullSummary += "<br/>";
+    fullSummary += "<br/>";
 
-    // let level3ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed");
-    // fullSummary += "Level 3 Successful Climb Rate: " + getRateOfItems(level3ClimbSuccessRateItems) + " | " + getParsedAverageItem(level3ClimbSuccessRateItems) + "%";
-    // fullSummary += "<br/>";
-    // let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
-    // fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
-    // fullSummary += "<br/>";
+    let climbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "climbed");
+    fullSummary += "Successful Climb Rate: " + getRateOfItems(climbSuccessRateItems) + " | " + getParsedAverageItem(climbSuccessRateItems) + "%";
+    fullSummary += "<br/>";
+    let climbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "attempted climb");
+    fullSummary += "Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(climbFailRateItems) + " | " + getParsedAverageItem(climbFailRateItems) + "%";
+    fullSummary += "<br/>";
+    let carriedRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "got carried");
+    fullSummary += "Carried By Robot Rate: " + getRateOfItems(carriedRateItems) + " | " + getParsedAverageItem(carriedRateItems) + "%";
+    fullSummary += "<br/>";
+    let parkedRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "parked");
+    fullSummary += "Park Rate: " + getRateOfItems(parkedRateItems) + " | " + getParsedAverageItem(parkedRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    let edgeClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "edge");
+    fullSummary += "Edge Climb Rate: " + getRateOfItems(edgeClimbRateItems) + " | " + getParsedAverageItem(edgeClimbRateItems) + "%";
+    fullSummary += "<br/>";
+    let middleClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "middle");
+    fullSummary += "Middle Climb Rate: " + getRateOfItems(middleClimbRateItems) + " | " + getParsedAverageItem(middleClimbRateItems) + "%";
+    fullSummary += "<br/>";
+    let centerClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "center");
+    fullSummary += "Center Climb Rate: " + getRateOfItems(centerClimbRateItems) + " | " + getParsedAverageItem(centerClimbRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    let carriedRobotRateItems = getColumnItems(currentRobotNumber, labels, robots, "robots carried");
+    let carriedRobotMaxText = getMaxItemsText(labels, robots, carriedRobotRateItems);
+    fullSummary += "Carried Another Robot Rate: " + getRateOfItems(carriedRobotRateItems) + " | " + getPercentageRateOfItems(carriedRobotRateItems) + "%" + 
+            " | " + carriedRobotMaxText;
+    fullSummary += "<br/>";
 
     fullSummary += "<br/>";
 
@@ -479,30 +505,10 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
     let averageStanding = getPositionInSortedList(robots, averageSortedRobotsByStat, currentRobotNumber, searchTermIndex);
     fullSummary += " | Top " + averageStanding + "<br/>";
 
-    //find max
-    let hitMaxItems = getMaxItems(hitItems);
+    // Get text about maximums and the matches they happened in
+    let matchNumbersOfMaximums = getMaxItemsText(labels, robots, hitItems);
 
-    //get match number index to show what match this happened in
-    let matchNumColumn = getColumnIndex(labels, "match");
-
-    //string of what match numbers this max happened in
-    let matchNumbersOfMaximums = "";
-    for (let i = 0; i < hitMaxItems.length; i++) {
-        matchNumbersOfMaximums += robots[matchNumColumn].data[hitMaxItems[i][1] + 1][matchNumColumn];
-
-        if (i != hitMaxItems.length - 1) {
-            //if it is not the last index
-            matchNumbersOfMaximums += ", ";
-        }
-    }
-
-    if (hitMaxItems[0][0] === "0") {
-        //there is no maximum, so it doesn't matter
-        //it would just list every match
-        matchNumbersOfMaximums = "N/A";
-    }
-
-    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " in match " + matchNumbersOfMaximums;
+    fullSummary += searchTerm + matchNumbersOfMaximums;
 
     //add on if they are top for max
     let maxStanding = getPositionInSortedList(robots, maxSortedRobotsByStat, currentRobotNumber, searchTermIndex);
@@ -539,6 +545,40 @@ function getMaxItems(items) {
     }
  
     return allMaxItems;
+}
+
+/**
+ * Formatted string of what match numbers this max happened in
+ * 
+ * @param {Array<string>} labels 
+ * @param {Array<string>} robots 
+ * @param {Array<any>} items 
+ * @returns {string}
+ */
+function getMaxItemsText(labels, robots, items) {
+    //get match number index to show what match this happened in
+    let matchNumColumn = getColumnIndex(labels, "match");
+
+    let maxItems = getMaxItems(items);
+
+    //string of what match numbers this max happened in
+    let matchNumbersOfMaximums = "";
+    for (let i = 0; i < maxItems.length; i++) {
+        matchNumbersOfMaximums += robots[matchNumColumn].data[maxItems[i][1] + 1][matchNumColumn];
+
+        if (i != maxItems.length - 1) {
+            //if it is not the last index
+            matchNumbersOfMaximums += ", ";
+        }
+    }
+
+    if (maxItems[0][0] === "0") {
+        //there is no maximum, so it doesn't matter
+        //it would just list every match
+        matchNumbersOfMaximums = "N/A";
+    }
+
+    return " Max " + maxItems[0][0] + " in match " + matchNumbersOfMaximums;
 }
 
 function getMinItems(items) {
@@ -615,11 +655,24 @@ function getParsedAverageItem(items) {
 function getRateOfItems(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        if (items[i] === "1" || items[i] === 1) {
+        if (items[i] === "1" || items[i] >= 1) {
             sum++;
         }
     }
 
     //convert sum to average
     return sum + "/" + items.length;
+}
+
+//gets how many times 1 is in items in a percentage
+function getPercentageRateOfItems(items) {
+    let sum = 0;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i] === "1" || items[i] >= 1) {
+            sum++;
+        }
+    }
+
+    //convert sum to average
+    return ((sum/items.length) * 100).toFixed(2);
 }
