@@ -30,3 +30,11 @@ If you want to run the server based version, use `node server`
 Then access the page at `http://localhost:8080`
 It also supports `https`, the certificates can be placed into the `certificates` folder as `certificate.crt` and `private.key`.
 The password for the data upload page should be stored in the `certificates` folder in a file called `password.txt`.
+
+# Build Electron app from source
+
+Install the dependencies with `npm install`
+
+Build a Windows x86 32-bit binary with `npx electron-packager Reader --platform win32 --arch=ia32`.
+
+Build all binaries with `npx electron-packager Reader --all`
