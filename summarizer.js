@@ -18,10 +18,10 @@ const rocketCargoExtras = ['Level 1', 'Level 2', 'Level 3'];
 
 //what labels have a complex action summary
 var actionSummaryLabels = [];
-actionSummaryLabels.push("TeleOp Full Rocket Cargo");
-actionSummaryLabels.push("TeleOp Full Cargo Ship Cargo");
-actionSummaryLabels.push("TeleOp Full Rocket Hatch");
-actionSummaryLabels.push("TeleOp Full Cargo Ship Hatch");
+actionSummaryLabels.push("TeleOp Outer Shots");
+actionSummaryLabels.push("TeleOp Inner Shots");
+actionSummaryLabels.push("TeleOp Low Shots");
+actionSummaryLabels.push("TeleOp Missed Shots");
 
 //pre generate all of the extra action labels
 var extraActionSummaryLabels = [];
@@ -61,7 +61,7 @@ function getOverallData(currentRobotNumber, labels, robots) {
     let fullSummary = "";
 
     for (let i = 0; i < actionSummaryLabels.length; i++) {
-        fullSummary += getComplexActionSummary(currentRobotNumber, labels, robots, i);
+        fullSummary += getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabels, averageSortedRobotsByStat, maxSortedRobotsByStat, i);
 
         fullSummary += "<br/>";
     }
@@ -76,22 +76,43 @@ function getOverallData(currentRobotNumber, labels, robots) {
     fullSummary += "Tipped Rate: " + getRateOfItems(tippedRateItems) + " | " + getParsedAverageItem(tippedRateItems) + "%";
     fullSummary += "<br/>";
 
-    fullSummary += "<br/>";
-
-    let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
-    fullSummary += "Level 2 Successful Climb Rate: " + getRateOfItems(level2ClimbSuccessRateItems) + " | " + getParsedAverageItem(level2ClimbSuccessRateItems) + "%";
-    fullSummary += "<br/>";
-    let level2ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb");
-    fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
-    fullSummary += "<br/>";
+    // let level2ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "climbed");
+    // fullSummary += "Level 2 Successful Climb Rate: " + getRateOfItems(level2ClimbSuccessRateItems) + " | " + getParsedAverageItem(level2ClimbSuccessRateItems) + "%";
+    // fullSummary += "<br/>";
+    // let level2ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 2", "attempted climb");
+    // fullSummary += "Level 2 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level2ClimbFailRateItems) + " | " + getParsedAverageItem(level2ClimbFailRateItems) + "%";
+    // fullSummary += "<br/>";
 
     fullSummary += "<br/>";
 
-    let level3ClimbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "climbed");
-    fullSummary += "Level 3 Successful Climb Rate: " + getRateOfItems(level3ClimbSuccessRateItems) + " | " + getParsedAverageItem(level3ClimbSuccessRateItems) + "%";
+    let climbSuccessRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "climbed");
+    fullSummary += "Successful Climb Rate: " + getRateOfItems(climbSuccessRateItems) + " | " + getParsedAverageItem(climbSuccessRateItems) + "%";
     fullSummary += "<br/>";
-    let level3ClimbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "level 3", "attempted climb");
-    fullSummary += "Level 3 Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(level3ClimbFailRateItems) + " | " + getParsedAverageItem(level3ClimbFailRateItems) + "%";
+    let climbFailRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "attempted climb");
+    fullSummary += "Climb Fail Rate (in the matches that they attempted): " + getRateOfItems(climbFailRateItems) + " | " + getParsedAverageItem(climbFailRateItems) + "%";
+    fullSummary += "<br/>";
+    let carriedRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "got carried");
+    fullSummary += "Carried By Robot Rate: " + getRateOfItems(carriedRateItems) + " | " + getParsedAverageItem(carriedRateItems) + "%";
+    fullSummary += "<br/>";
+    let parkedRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb", "parked");
+    fullSummary += "Park Rate: " + getRateOfItems(parkedRateItems) + " | " + getParsedAverageItem(parkedRateItems) + "%";
+    fullSummary += "<br/>";
+
+    fullSummary += "<br/>";
+
+    let edgeClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "edge");
+    let middleClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "middle");
+    let centerClimbRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "endgame climb type", "center");
+
+    fullSummary += "Edge : Middle : Center Climb Rate: " + getRawRateOfItems(edgeClimbRateItems) + " : " + getRawRateOfItems(middleClimbRateItems) 
+        + " : " + getRawRateOfItems(centerClimbRateItems);
+
+    fullSummary += "<br/>";
+
+    let carriedRobotRateItems = getColumnItems(currentRobotNumber, labels, robots, "robots carried");
+    let carriedRobotMaxText = getMaxItemsText(labels, robots, carriedRobotRateItems);
+    fullSummary += "Carried Another Robot Rate: " + getRateOfItems(carriedRobotRateItems) + " | " + getPercentageRateOfItems(carriedRobotRateItems) + "%" + 
+            " | " + carriedRobotMaxText;
     fullSummary += "<br/>";
 
     fullSummary += "<br/>";
@@ -109,9 +130,9 @@ function getOverallData(currentRobotNumber, labels, robots) {
 function getAutoSummary(currentRobotNumber, labels, robots) {
     //find all the auto collumns
     var autoColumns = [];
-    //start at index 5 to avoid auto start position
-    for (let i = 5; i < labels.length; i++) {
-        if (labels[i].toLowerCase().includes("auto") && !labels[i].toLowerCase().includes("full")) {
+    //start at index 4 to avoid auto start position
+    for (let i = 4; i < labels.length; i++) {
+        if (labels[i].toLowerCase().includes("auto")) {
             autoColumns.push(i);
         }
     }
@@ -159,26 +180,6 @@ function getAutoSummary(currentRobotNumber, labels, robots) {
 
 function getPreMatchSummary(currentRobotNumber, labels, robots) {
     let fullSummary = "";
-
-    //show if they start with cargo or hatch
-    let startingWithCargoRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects cargo");
-    fullSummary += "Starting With Cargo: " + getRateOfItems(startingWithCargoRateItems) + " | " + getParsedAverageItem(startingWithCargoRateItems) + "%";
-    fullSummary += "<br/>";
-    let startingWithHatchRateItems = getColumnItems(currentRobotNumber, labels, robots, "starting objects hatch");
-    fullSummary += "Starting With Hatch: " + getRateOfItems(startingWithHatchRateItems) + " | " + getParsedAverageItem(startingWithHatchRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
-
-    //starting platform
-    let level1StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 1 (hab)");
-    fullSummary += "Starting On Level 1 (HAB): " + getRateOfItems(level1StartRateItems) + " | " + getParsedAverageItem(level1StartRateItems) + "%";
-    fullSummary += "<br/>";
-    let level2StartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start platform", "level 2");
-    fullSummary += "Starting On Level 2: " + getRateOfItems(level2StartRateItems) + " | " + getParsedAverageItem(level2StartRateItems) + "%";
-    fullSummary += "<br/>";
-
-    fullSummary += "<br/>";
 
     //starting position
     let rightStartRateItems = getColumnTextItems(currentRobotNumber, labels, robots, "auto start location", "right");
@@ -234,17 +235,17 @@ function generateAllStats(labels, robots) {
     generateStats(labels, robots, actionSummaryLabels, averageSortedRobotsByStat, true);
     generateStats(labels, robots, actionSummaryLabels, maxSortedRobotsByStat, false);
 
-    //each section of extra data is another array inside the main array
-    for (let i = 0; i < extraActionSummaryLabels.length; i++) {
-        let averageSortedRobots = [];
-        let maxSortedRobots = [];
+    // //each section of extra data is another array inside the main array
+    // for (let i = 0; i < extraActionSummaryLabels.length; i++) {
+    //     let averageSortedRobots = [];
+    //     let maxSortedRobots = [];
 
-        generateStats(labels, robots, extraActionSummaryLabels[i], averageSortedRobots, true);
-        generateStats(labels, robots, extraActionSummaryLabels[i], maxSortedRobots, false);
+    //     generateStats(labels, robots, extraActionSummaryLabels[i], averageSortedRobots, true);
+    //     generateStats(labels, robots, extraActionSummaryLabels[i], maxSortedRobots, false);
 
-        extraAverageSortedRobotsByStat.push(averageSortedRobots);
-        extraMaxSortedRobotsByStat.push(maxSortedRobots);
-    }
+    //     extraAverageSortedRobotsByStat.push(averageSortedRobots);
+    //     extraMaxSortedRobotsByStat.push(maxSortedRobots);
+    // }
 }
 
 //will generate the placement statistics for each robot
@@ -254,7 +255,7 @@ function generateStats(labels, robots, actionSummaryLabels, sortedRobotsByStat, 
     //the list of statistics to look at
     let statistics = [];
     for (let i = 0; i < actionSummaryLabels.length; i++) {
-        statistics.push(actionSummaryLabels[i] + " Hit");
+        statistics.push(actionSummaryLabels[i]);
     }
 
     for (let i = 0; i < statistics.length; i++) {
@@ -476,12 +477,10 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
     let fullSummary = "";
 
     //miss and hit to include the successes and failures
-    let hitIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " hit");
-    let missIndex = getColumnIndex(labels, searchTerm.toLowerCase() + " miss");
+    let hitIndex = getColumnIndex(labels, searchTerm.toLowerCase());
 
     //all the data points for this robot
     let hitItems = [];
-    let missItems = [];
     for (let currentRobot = 0; currentRobot < robots.length; currentRobot++) {
         if (robots[currentRobot].robotNumber === currentRobotNumber) {
             //all the matches for this robot
@@ -490,53 +489,23 @@ function getActionSummary(currentRobotNumber, labels, robots, actionSummaryLabel
                 //otherwise it's just a line break at the end of the file
                 if (robots[currentRobot].data[matchNum].length > 1) {
                     hitItems.push(robots[currentRobot].data[matchNum][hitIndex]);
-                    missItems.push(robots[currentRobot].data[matchNum][missIndex]);
                 }
             }
         }
     }
     //find average
     let hitAverage = getAverageItem(hitItems);
-    let missAverage = getAverageItem(missItems);
 
-    fullSummary += searchTerm + " Average " + hitAverage.toFixed(2) + " : " + missAverage.toFixed(2);
+    fullSummary += searchTerm + " Average " + hitAverage.toFixed(2);
 
     //add on if they are top for average
     let averageStanding = getPositionInSortedList(robots, averageSortedRobotsByStat, currentRobotNumber, searchTermIndex);
     fullSummary += " | Top " + averageStanding + "<br/>";
 
-    //find max
-    let hitMaxItems = getMaxItems(hitItems);
+    // Get text about maximums and the matches they happened in
+    let matchNumbersOfMaximums = getMaxItemsText(labels, robots, hitItems);
 
-    //the miss amount in ONLY the matches where the maximum amount of items were places
-    let maxMissItems = [];
-    for (let i = 0; i < hitMaxItems.length; i++) {
-        maxMissItems.push(missItems[hitMaxItems[i][1]]);
-    }
-    //it will find the minimum misses in the matches where they scored the most (the best performance)
-    let missMinItems = getMinItems(maxMissItems);
-
-    //get match number index to show what match this happened in
-    let matchNumColumn = getColumnIndex(labels, "match");
-
-    //string of what match numbers this max happened in
-    let matchNumbersOfMaximums = "";
-    for (let i = 0; i < hitMaxItems.length; i++) {
-        matchNumbersOfMaximums += robots[matchNumColumn].data[hitMaxItems[i][1] + 1][matchNumColumn];
-
-        if (i != hitMaxItems.length - 1) {
-            //if it is not the last index
-            matchNumbersOfMaximums += ", ";
-        }
-    }
-
-    if (hitMaxItems[0][0] === "0") {
-        //there is no maximum, so it doesn't matter
-        //it would just list every match
-        matchNumbersOfMaximums = "N/A";
-    }
-
-    fullSummary += searchTerm + " Max " + hitMaxItems[0][0] + " : " + missMinItems[0] + " in match " + matchNumbersOfMaximums;
+    fullSummary += searchTerm + matchNumbersOfMaximums;
 
     //add on if they are top for max
     let maxStanding = getPositionInSortedList(robots, maxSortedRobotsByStat, currentRobotNumber, searchTermIndex);
@@ -575,6 +544,40 @@ function getMaxItems(items) {
     return allMaxItems;
 }
 
+/**
+ * Formatted string of what match numbers this max happened in
+ * 
+ * @param {Array<string>} labels 
+ * @param {Array<string>} robots 
+ * @param {Array<any>} items 
+ * @returns {string}
+ */
+function getMaxItemsText(labels, robots, items) {
+    //get match number index to show what match this happened in
+    let matchNumColumn = getColumnIndex(labels, "match");
+
+    let maxItems = getMaxItems(items);
+
+    //string of what match numbers this max happened in
+    let matchNumbersOfMaximums = "";
+    for (let i = 0; i < maxItems.length; i++) {
+        matchNumbersOfMaximums += robots[matchNumColumn].data[maxItems[i][1] + 1][matchNumColumn];
+
+        if (i != maxItems.length - 1) {
+            //if it is not the last index
+            matchNumbersOfMaximums += ", ";
+        }
+    }
+
+    if (maxItems[0][0] === "0") {
+        //there is no maximum, so it doesn't matter
+        //it would just list every match
+        matchNumbersOfMaximums = "N/A";
+    }
+
+    return " Max " + maxItems[0][0] + " in match " + matchNumbersOfMaximums;
+}
+
 function getMinItems(items) {
     //there might be multiple items that are the minimum
     let allMinItems = [-1];
@@ -596,7 +599,11 @@ function getMinItems(items) {
 function getAverageItem(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        sum += parseFloat(items[i]);
+        if (!isNaN(items[i])) {
+            sum += parseFloat(items[i]);
+        } else if (items[i].toLowerCase() === "true") {
+            sum += 1;
+        }
     }
 
     //convert sum to average
@@ -641,15 +648,32 @@ function getParsedAverageItem(items) {
     return (getAverageItem(items) * 100).toFixed(2);
 }
 
-//gets how many times 1 is in items
+//gets how many times 1 is in items in a formatted string
 function getRateOfItems(items) {
+    return getRawRateOfItems(items) + "/" + items.length;
+}
+
+//gets how many times 1 is in items
+function getRawRateOfItems(items) {
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-        if (items[i] === "1" || items[i] === 1) {
+        if (items[i] === "1" || items[i] >= 1) {
+            sum++;
+        }
+    }
+
+    return sum;
+}
+
+//gets how many times 1 is in items in a percentage
+function getPercentageRateOfItems(items) {
+    let sum = 0;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i] === "1" || items[i] >= 1) {
             sum++;
         }
     }
 
     //convert sum to average
-    return sum + "/" + items.length;
+    return ((sum/items.length) * 100).toFixed(2);
 }
