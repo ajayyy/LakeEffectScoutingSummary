@@ -11,7 +11,7 @@
   "author": "Ajay Ramachandran",
   "license": "MIT",
   "dependencies": {
-    "electron": "^4.1.0",
+    "electron": "^13.6.6",
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "jslint": "^0.12.1"
